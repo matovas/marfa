@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+
+if ARGV.length > 1
+  command = ARGV[0]
+  rake_path = File.expand_path('../../Rakefile', __FILE__)
+  system "rake -f #{rake_path} #{command}[#{FileUtils.pwd},#{ARGV[1]}]"
+
+  if $?.exitstatus > 0
+    puts 'Failed'
+  end
+
+else
+  puts 'Not enough parameters'
+end
