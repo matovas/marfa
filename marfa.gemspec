@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.0.1a'
+  s.version     = '0.0.1.3a'
   s.date        = '2017-01-12'
   s.summary     = 'Little Sinatra-based framework'
   s.description = 'Little Sinatra-based framework'
@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency('rake')
   s.add_dependency('redis')
   s.add_dependency('rest-client')
-  s.add_dependency('rspec')
   s.add_dependency('sass')
   s.add_dependency('sinatra')
   s.add_dependency('sinatra-contrib')

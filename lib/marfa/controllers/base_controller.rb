@@ -8,12 +8,6 @@ module Marfa
   module Controllers
     # base controller
     class BaseController < Sinatra::Base
-      # TODO: Create base configuration for this
-      set :haml, format: :html5
-      set :views, File.expand_path('../../views', __FILE__)
-      set :public_folder, File.expand_path('../../../public', __FILE__)
-      enable :sessions, :method_override
-
       # enable CSRF protection
       configure do
         use Rack::Csrf, raise: true
