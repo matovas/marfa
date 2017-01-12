@@ -61,6 +61,7 @@ task :start, [:home_path, :project_dir] do |t, args|
 
     puts 'Creating config files...'
     create_cache_config_file
+    create_application_config_file
     create_rackup_config_file
     puts 'Config files are created'
 
