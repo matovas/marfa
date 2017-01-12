@@ -1,21 +1,20 @@
 # encoding: utf-8
-
 require 'sass'
 require 'sass/plugin'
 
-# Модуль SASS-методов
+# Sass module extension
 module Sass::Script::Functions
-  # SASS-метод - получение типа устройства
+  # SASS-method - device type
   def device
     Sass::Script::Value::String.new(Sass::Plugin.options[:custom][:device])
   end
 
-  # SASS-метод - получение типа секции?
+  # SASS-method - section
   def section
     Sass::Script::Value::String.new(Sass::Plugin.options[:custom][:section])
   end
 
-  # SASS-метод - получение пути для контента
+  # SASS-method - content path
   def content_path
     Sass::Script::Value::String.new(Sass::Plugin.options[:custom][:contentPath])
   end

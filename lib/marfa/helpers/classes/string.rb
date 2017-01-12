@@ -1,17 +1,19 @@
-# Дополнение класса String
+# encoding: utf-8
+
+# Additional String functionality
 class String
-  # Заменяет все символы в строке '/' на '_'
+  # Replaces all '/' to '_'
   # @example
   #   "some/path".to_underscore
-  # @return [String] измененная строка
+  # @return [String] changed string
   def to_underscore
     downcase.gsub(%r{/}, '_')
   end
 
-  # Преобразует строку вида 'category/list' к CamelCase-строке - имени класса
+  # Convert string like 'category/list' to CamelCase
   # @example
   #   "some/path".to_class_name
-  # @return [String] измененная строка
+  # @return [String] changed string
   def to_class_name
     parts = downcase.split('/')
     parts.each(&:capitalize!)

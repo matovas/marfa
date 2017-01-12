@@ -4,7 +4,7 @@
 Gem::Specification.new do |s|
   s.name        = 'marfa'
   s.version     = '0.0.1a'
-  s.date        = '2017-01-11'
+  s.date        = '2017-01-12'
   s.summary     = 'Little Sinatra-based framework'
   s.description = 'Little Sinatra-based framework'
   s.authors     = ['Max Krechetov', 'Roman Yakushev']

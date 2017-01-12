@@ -1,10 +1,9 @@
 # encoding: utf-8
-
 require 'sass/plugin'
 
-# Проброс переменных в sass файлы
-# @param device [String] - тип устройства
-# @param section [String] - секция?
+# Pass dynamic vars to sass-files
+# @param device [String] - device type
+# @param section [String] - section
 def dynamic_vars(device, section = 'root')
   Sass::Plugin.options[:custom] ||= {}
   Sass::Plugin.options[:custom][:device] = device
@@ -12,10 +11,10 @@ def dynamic_vars(device, section = 'root')
   Sass::Plugin.options[:custom][:contentPath] = $content_path
 end
 
-# Создание стилей
-# @param device [String] - тип устройства
-# @param minify [Boolean] - минификация
-# @return [String] - созданные стили
+# Creating styles to main page
+# @param device [String] - device type
+# @param minify [Boolean] - add minifying
+# @return [String] - styles
 def create_main_styles(device, minify = false)
   dynamic_vars(device)
 
@@ -29,18 +28,17 @@ def create_main_styles(device, minify = false)
   output
 end
 
-# Рендер стилей страниц
-# @param device [String] - тип устройства
-# @param range [String] - диапазон
-# @param section [String] - секция?
-# @return [String] - стили
+# Style rendering
+# @param device [String] - device type
+# @param range [String] - range
+# @param section [String] - section
+# @return [String] - styles
 def render_style_pages(device, range, section)
   name = section.to_s + '_' + range.to_s + '_' + device.to_s + '.css'
   path = settings.public_folder.to_s + '/css/' + name
 
   if File.exist?(path) && $cache_styles
     send_file(File.join(settings.public_folder.to_s + '/css', File.basename(name)), type: 'text/css')
-
   else
     styles = create_page_styles(section, range, device)
     File.write(path, styles) if $cache_styles && ENV['PLACE'] != 'heroku'
@@ -49,9 +47,9 @@ def render_style_pages(device, range, section)
   end
 end
 
-# Рендер основного стиля
-# @param device [String] - тип устройства
-# @return [String] - стили
+# Rendering main styles
+# @param device [String] - device type
+# @return [String] - styles
 def render_main_style(device)
   name = 'main.' + device.to_s + '.css'
   path = settings.public_folder.to_s + '/css/' + name
