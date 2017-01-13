@@ -8,6 +8,9 @@ module Marfa
   module Controllers
     # base controller
     class BaseController < Sinatra::Base
+      before do
+        @cache = Marfa::Cache.new
+      end
       # enable CSRF protection
       configure do
         use Rack::Csrf, raise: true
@@ -30,9 +33,9 @@ module Marfa
         #   render_cached_content('some_key', 'path/url', {})
         # @return [String] rendered content
         def render_cached_content(cache_key, path, data = {})
-          return $cache.get(cache_key) if $cache.exist?(cache_key)
+          return @cache.get(cache_key) if @cache.exist?(cache_key)
           output = haml :"#{path}", locals: data
-          $cache.set(cache_key, output)
+          @cache.set(cache_key, output)
           output
         end
 
@@ -44,7 +47,7 @@ module Marfa
         #   render_page('index', ['tag1', 'tag2'], {})
         # @return [String] rendered content
         def render_page(path, tags, data)
-          cache_key = $cache.create_key('page', path, tags)
+          cache_key = @cache.create_key('page', path, tags)
           full_path = 'pages/' + path
           render_cached_content(cache_key, full_path, data)
         end
@@ -58,8 +61,8 @@ module Marfa
         # @return [String] data from cache
         # @return [Nil]
         def get_cached_content(kind, path, tags)
-          cache_key = $cache.create_key(kind, path, tags)
-          return $cache.get(cache_key) if $cache.exist?(cache_key)
+          cache_key = @cache.create_key(kind, path, tags)
+          return @cache.get(cache_key) if @cache.exist?(cache_key)
         end
 
         # Render block from cache, return html
@@ -83,7 +86,7 @@ module Marfa
 
           block = Object.const_get(classname).new
           data = block.get_data(attrs)
-          cache_key = $cache.create_key('block', path, tags)
+          cache_key = @cache.create_key('block', path, tags)
           full_path = 'blocks/' + path
 
           render_cached_content(cache_key, full_path, data)

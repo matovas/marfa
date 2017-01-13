@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'sinatra/base'
-require 'marfa/configuration'
+# require 'marfa/configuration'
+require 'ostruct'
 require 'marfa/cache'
 require 'marfa/version'
 require 'marfa/controllers/base_controller'
@@ -15,4 +16,9 @@ module Marfa
   def self.test
     puts 'it is alive!'
   end
+
+  def self.config
+    @config = OpenStruct.new
+  end
+
 end

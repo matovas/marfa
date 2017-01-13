@@ -1,7 +1,7 @@
 require 'ostruct'
 
 module Marfa
-  module Configuration
+  class Configuration
     def config
       @config ||= OpenStruct.new
     end

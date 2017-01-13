@@ -77,7 +77,5 @@ module Marfa
       path.gsub(%r{[/.]}, '_')
     end
   end
-
-  $cache = Cache.new
 end
 
