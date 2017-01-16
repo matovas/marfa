@@ -3,22 +3,29 @@ require 'rake'
 
 include FileUtils
 
-# Default cache configuration
-def create_cache_config_file
-  open('config/cache.yml', 'w') do |file|
-    file.puts 'enabled: false'
-    file.puts "host: 'localhost'"
-    file.puts 'port: 6379'
-    file.puts 'db: 0'
-    file.puts 'expiration_time: 86400'
+# Default marfa configuration
+def create_marfa_config_file
+  open('config/marfa.rb', 'w') do |file|
+    file.puts '# Marfa configuration file'
+    file.puts ''
+    file.puts '# Specifying API Server is needed'
+    file.puts "Marfa.config.api_server = ''"
+    file.puts ''
+    file.puts '# Cache config'
+    file.puts "Marfa.config.cache = {"
+    file.puts '  enabled: false,'
+    file.puts "  host: '',"
+    file.puts '  port: 0,'
+    file.puts '  db: 0,'
+    file.puts '  expiration_time: 3600,'
+    file.puts '}'
   end
 end
 
 def create_application_config_file
   open('config/application.rb', 'w') do |file|
-    file.puts "require 'marfa'"
-    file.puts ''
-    file.puts "Marfa.config.api_server = ''"
+    # file.puts "require 'marfa'"
+    # file.puts ''
   end
 end
 
@@ -37,6 +44,7 @@ def create_rackup_config_file
   open('config.ru', 'w') do |file|
     file.puts "require 'marfa'"
     file.puts "require File.dirname(__FILE__) + '/app/bootstrap'"
+    file.puts "require File.dirname(__FILE__) + '/config/marfa'"
     file.puts ''
     file.puts '# Controllers auto-bootstrap'
     file.puts "controllers = Object.constants.select { |c| c.to_s.include? 'Controller' }"
@@ -48,6 +56,8 @@ end
 def create_bootstrap_file
   open('app/bootstrap.rb', 'w') do |file|
     file.puts "require File.dirname(__FILE__) + '/models/dto'"
+    file.puts ''
+    file.puts '# requiring all blocks and controllers'
     file.puts "Dir[File.dirname(__FILE__) + '/blocks/**/*.rb'].each { |file| require file }"
     file.puts "Dir[File.dirname(__FILE__) + '/controllers/**/*.rb'].each { |file| require file }"
   end
@@ -78,7 +88,7 @@ task :start, [:home_path, :project_dir] do |t, args|
     puts 'Dummy model files are created'
 
     puts 'Creating config files...'
-    create_cache_config_file
+    create_marfa_config_file
     create_application_config_file
     create_bootstrap_file
     create_rackup_config_file

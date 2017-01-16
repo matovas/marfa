@@ -1,8 +1,7 @@
-# encoding: utf-8
-
+# Version constant
 module Marfa
   # The version constant for the current version of Marfa
-  VERSION = '0.0.1.8' unless defined?(Marfa::VERSION)
+  VERSION = '0.0.1b' unless defined?(Marfa::VERSION)
 
   # The current Marfa version.
   # @return [String] The version number

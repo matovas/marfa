@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # Additional String functionality
 class String
   # Replaces all '/' to '_'

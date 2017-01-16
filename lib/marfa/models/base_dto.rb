@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # Extending Marfa
 module Marfa
   # Extending Models

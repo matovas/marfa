@@ -43,7 +43,7 @@ module Marfa
         p model_id
 
         data = { deleted: true }
-        $cache.delete_by_pattern(model_name)
+        Marfa.cache.delete_by_pattern(model_name)
         data
       end
 

@@ -1,6 +1,4 @@
-# encoding: utf-8
 require 'sinatra/base'
-# require 'marfa/configuration'
 require 'ostruct'
 require 'marfa/cache'
 require 'marfa/version'
@@ -11,14 +9,16 @@ require 'marfa/helpers/sass_functions'
 require 'marfa/models/base_dto'
 require 'marfa/models/base_model'
 
+# requires all submodules
 module Marfa
-  # test method
-  def self.test
-    puts 'it is alive!'
+  # Configuration
+  def self.config
+    @config ||= OpenStruct.new
   end
 
-  def self.config
-    @config = OpenStruct.new
+  # Returns Cache instance
+  def self.cache
+    @cache ||= Marfa::Cache.new
   end
 
 end
