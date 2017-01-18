@@ -20,8 +20,11 @@ def create_marfa_config_file
     file.puts '  expiration_time: 3600,'
     file.puts '}'
     file.puts ''
+    file.puts '# public folder'
+    file.puts "Marfa.config.public_folder = File.dirname(__FILE__) + '/static'"
+    file.puts ''
     file.puts '# Static files config'
-    file.puts "Marfa.config.static_files_cache = 604800"
+    file.puts "Marfa.config.static_files_cache_lifetime = 604800"
   end
 end
 

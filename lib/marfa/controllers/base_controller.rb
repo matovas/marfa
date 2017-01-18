@@ -11,7 +11,7 @@ module Marfa
       #   Marfa.cache = Marfa::Cache.new
       # end
       # enable CSRF protection
-      set :public_folder, File.dirname(__FILE__) + '/static'
+      set :public_folder, Marfa.config.public_folder
       set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache] # cache in browser all files under public folder
 
       configure do
