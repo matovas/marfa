@@ -7,13 +7,10 @@ module Marfa
   module Controllers
     # base controller
     class BaseController < Sinatra::Base
-      # before do
-      #   Marfa.cache = Marfa::Cache.new
-      # end
-      # enable CSRF protection
       set :public_folder, Marfa.config.public_folder
-      set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache] # cache in browser all files under public folder
+      set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache_lifetime] # cache in browser all files under public folder
 
+      # CSRF protection
       configure do
         use Rack::Csrf, raise: true
       end
