@@ -19,6 +19,12 @@ def create_marfa_config_file
     file.puts '  db: 0,'
     file.puts '  expiration_time: 3600,'
     file.puts '}'
+    file.puts ''
+    file.puts '# public folder'
+    file.puts "Marfa.config.public_folder = File.dirname(__FILE__) + '/static'"
+    file.puts ''
+    file.puts '# Static files config'
+    file.puts "Marfa.config.static_files_cache_lifetime = 604800"
   end
 end
 
@@ -80,7 +86,7 @@ task :start, [:home_path, :project_dir] do |t, args|
     cd project_dir, verbose: true
 
     puts 'Creating project structure...'
-    mkdir_p(%w(app config app/blocks app/controllers app/models app/views))
+    mkdir_p(%w(app config static app/blocks app/controllers app/models app/views))
     puts 'Project structure are created'
 
     puts 'Creating dummy model files...'
