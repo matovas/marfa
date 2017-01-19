@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency('sass')
   s.add_dependency('sinatra')
   s.add_dependency('sinatra-contrib')
+  s.add_dependency('device_detector', '~> 1.0')
   s.add_dependency('yard')
   s.add_dependency('yard-sinatra')
 end
