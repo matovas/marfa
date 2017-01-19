@@ -12,12 +12,16 @@ module Marfa
         set :public_folder, Marfa.config.public_folder
         # cache in browser all files under public folder
         set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache_lifetime]
+        # CSRF protection
+        if (Marfa.config.csrf_enabled == true)
+          p 'csrf enabled'
+          configure do
+            use Rack::Csrf, raise: true
+          end
+        end
       end
 
-      # CSRF protection
-      configure do
-        use Rack::Csrf, raise: true
-      end
+
 
       # Not Found page
       not_found do
