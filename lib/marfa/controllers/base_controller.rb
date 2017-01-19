@@ -1,5 +1,6 @@
 require 'haml'
 require 'rack/csrf'
+require 'marfa/configuration'
 
 # Extending Marfa
 module Marfa
@@ -7,8 +8,11 @@ module Marfa
   module Controllers
     # base controller
     class BaseController < Sinatra::Base
-      set :public_folder, Marfa.config.public_folder
-      set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache_lifetime] # cache in browser all files under public folder
+      if defined?(Marfa.config)
+        set :public_folder, Marfa.config.public_folder
+        # cache in browser all files under public folder
+        set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache_lifetime]
+      end
 
       # CSRF protection
       configure do

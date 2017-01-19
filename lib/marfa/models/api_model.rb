@@ -1,12 +1,11 @@
 require 'rest-client'
 require 'json'
 
-# DEPRECATED SINCE 19/01/17
 module Marfa
   # Extend Models
   module Models
     # Base model
-    class BaseModel
+    class APIModel
       # Base model error
       class ModelError < StandardError; end
 

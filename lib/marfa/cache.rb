@@ -74,5 +74,10 @@ module Marfa
       path.gsub(%r{[/.]}, '_')
     end
   end
+
+  def self.cache
+    @cache ||= Marfa::Cache.new
+  end
+
 end
 
