@@ -3,8 +3,8 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.0.2.1'
-  s.date        = '2017-01-18'
+  s.version     = '0.0.2.2'
+  s.date        = '2017-01-19'
   s.summary     = 'Little Sinatra-based framework'
   s.description = 'Little Sinatra-based framework'
   s.authors     = ['Max Krechetov', 'Roman Yakushev', 'Anatoly Matov']

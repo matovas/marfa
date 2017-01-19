@@ -1,7 +1,7 @@
 require 'rest-client'
 require 'json'
 
-# Extend Marfa
+# DEPRECATED SINCE 19/01/17
 module Marfa
   # Extend Models
   module Models
