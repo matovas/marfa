@@ -11,7 +11,7 @@ module Marfa
     # base controller
     class BaseController < Sinatra::Base
       before do
-        @device = DeviceDetector.new(request.user_agent).device_type + 'zalupa'
+        @device = DeviceDetector.new(request.user_agent).device_type
       end
 
       if defined?(Marfa.config)
@@ -19,15 +19,13 @@ module Marfa
         # cache in browser all files under public folder
         set :static_cache_control, [:public, :max_age => Marfa.config.static_files_cache_lifetime]
         # CSRF protection
-        if (Marfa.config.csrf_enabled == true)
+        if Marfa.config.csrf_enabled
           p 'csrf enabled'
           configure do
             use Rack::Csrf, raise: true
           end
         end
       end
-
-
 
       # Not Found page
       not_found do
