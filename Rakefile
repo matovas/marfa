@@ -20,6 +20,9 @@ def create_marfa_config_file
     file.puts '  expiration_time: 3600,'
     file.puts '}'
     file.puts ''
+    file.puts '# CSRF protection'
+    file.puts "Marfa.config.csrf_enabled = false"
+    file.puts ''
     file.puts '# Public folder'
     file.puts "Marfa.config.public_folder = File.dirname(__FILE__) + '/static'"
     file.puts ''
