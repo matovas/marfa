@@ -17,7 +17,7 @@ def create_marfa_config_file
     file.puts "  host: '',"
     file.puts '  port: 0,'
     file.puts '  db: 0,'
-    file.puts '  expiration_time: 3600,'
+    file.puts '  expiration_time: 3600'
     file.puts '}'
     file.puts ''
     file.puts '# CSRF protection'
@@ -26,8 +26,8 @@ def create_marfa_config_file
     file.puts '# Public folder'
     file.puts "Marfa.config.public_folder = File.dirname(__FILE__) + '/static'"
     file.puts ''
-    file.puts '# Static files cache lifetime'
-    file.puts "Marfa.config.static_files_cache_lifetime = 604800"
+    file.puts '# Static files cache'
+    file.puts "Marfa.config.static_cache_control = [:public, :max_age => 2_592_000]"
   end
 end
 
@@ -54,6 +54,8 @@ def create_rackup_config_file
     file.puts "require 'marfa'"
     file.puts "require File.dirname(__FILE__) + '/app/bootstrap'"
     file.puts "require File.dirname(__FILE__) + '/config/marfa'"
+    file.puts ''
+    file.puts 'Marfa.configure_app'
     file.puts ''
     file.puts '# Controllers auto-bootstrap'
     file.puts "controllers = Object.constants.select { |c| c.to_s.include? 'Controller' }"
