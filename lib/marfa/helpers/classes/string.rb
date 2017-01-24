@@ -17,4 +17,25 @@ class String
     parts.each(&:capitalize!)
     parts.join('')
   end
+
+  # Convert string to url part
+  # @example
+  #   "some/path".to_url
+  # @return [String] changed string
+  def to_url
+    val = self.strip_tags!
+    val = val.gsub(':', '')
+    val = val.gsub(' ', '-')
+    val = val.gsub('/', '-')
+    val.downcase
+  end
+
+  # Remove tags
+  # @example
+  #   "<a>some/path</a>".strip_tags!
+  # @return [String] changed string
+  def strip_tags!
+    self.gsub(/<\/?[^>]*>/, '') # unless self.nil?
+  end
+
 end
