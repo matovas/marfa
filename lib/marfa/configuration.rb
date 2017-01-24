@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'marfa/controllers/base_controller'
+require 'htmlcompressor'
 
 module Marfa
   # Configuration
@@ -18,11 +19,9 @@ module Marfa
       app.set setting.to_sym, Marfa.config[setting] unless Marfa.config[setting].nil?
     end
 
-    if Marfa.config.csrf_enabled
-      p 'CSRF enabled'
-      app.configure do
-        app.use Rack::Csrf, raise: true
-      end
+    app.configure do
+      app.use Rack::Csrf, raise: true if Marfa.config.csrf_enabled
+      app.use HtmlCompressor::Rack if Marfa.config.compression_enabled
     end
   end
 
