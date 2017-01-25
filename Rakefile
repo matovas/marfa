@@ -11,6 +11,9 @@ def create_marfa_config_file
     file.puts '# Specifying API Server is needed'
     file.puts "Marfa.config.api_server = ''"
     file.puts ''
+    file.puts '# Views path is needed'
+    file.puts "Marfa.config.views = File.expand_path('./app/views')"
+    file.puts ''
     file.puts '# Cache config'
     file.puts "Marfa.config.cache = {"
     file.puts '  enabled: false,'
@@ -20,14 +23,23 @@ def create_marfa_config_file
     file.puts '  expiration_time: 3600'
     file.puts '}'
     file.puts ''
-    file.puts '# CSRF protection'
-    file.puts "Marfa.config.csrf_enabled = false"
+    file.puts '# Static files content path'
+    file.puts "Marfa.config.content_path = '/images/content/'"
     file.puts ''
     file.puts '# Public folder'
-    file.puts "Marfa.config.public_folder = File.dirname(__FILE__) + '/static'"
+    file.puts "Marfa.config.public_folder = File.expand_path('./static')"
     file.puts ''
     file.puts '# Static files cache'
     file.puts "Marfa.config.static_cache_control = [:public, :max_age => 2_592_000]"
+    file.puts ''
+    file.puts '# CSRF Protection'
+    file.puts 'Marfa.config.csrf_enabled = false'
+    file.puts ''
+    file.puts '# HTML Compression'
+    file.puts 'Marfa.config.compression_enabled = false'
+    file.puts ''
+    file.puts '# CSS Minifying'
+    file.puts 'Marfa.config.minify_css = true'
   end
 end
 
@@ -59,8 +71,9 @@ def create_rackup_config_file
     file.puts ''
     file.puts '# Controllers auto-bootstrap'
     file.puts "controllers = Object.constants.select { |c| c.to_s.include? 'Controller' }"
-    file.puts "controllers.map! { |controller| Object.const_get(controller) }"
-    file.puts "run Rack::Cascade.new(controllers)"
+    file.puts 'controllers.map! { |controller| Object.const_get(controller) }'
+    file.puts 'controllers += Marfa::Controllers.controllers_list'
+    file.puts 'run Rack::Cascade.new(controllers)'
   end
 end
 

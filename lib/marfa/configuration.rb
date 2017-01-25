@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'marfa/controllers/base_controller'
+require 'marfa/controllers/css_controller'
 require 'htmlcompressor'
 
 module Marfa
@@ -12,13 +13,22 @@ module Marfa
   def self.configure_app
     return if @config.to_h.empty?
 
+    _configure_settings(Marfa::Controllers::BaseController)
+    _configure_settings(Marfa::Controllers::CssController)
+    _configure_ext_modules(Marfa::Controllers::BaseController)
+  end
+
+  private
+
+  def self._configure_settings(app)
     _default_settings
-    app = Marfa::Controllers::BaseController
 
     @_default_settings.each do |setting|
       app.set setting.to_sym, Marfa.config[setting] unless Marfa.config[setting].nil?
     end
+  end
 
+  def self._configure_ext_modules(app)
     app.configure do
       app.use Rack::Csrf, raise: true if Marfa.config.csrf_enabled
       app.use HtmlCompressor::Rack if Marfa.config.compression_enabled
@@ -30,6 +40,7 @@ module Marfa
     @_default_settings = [
       'public_folder',
       'static_cache_control',
+      'views'
     ]
   end
 end
