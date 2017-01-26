@@ -11,6 +11,10 @@ module Marfa
       get '/css/main.:device.css' do |device|
         render_main_style(device)
       end
+
+      get '/css/:section.:range.:device.css' do |section, range, device|
+        render_page_style(section, range, device)
+      end
     end
   end
 end
