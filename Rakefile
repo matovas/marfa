@@ -40,6 +40,9 @@ def create_marfa_config_file
     file.puts ''
     file.puts '# CSS Minifying'
     file.puts 'Marfa.config.minify_css = true'
+    file.puts ''
+    file.puts '# JS Minifying'
+    file.puts 'Marfa.config.minify_js = true'
   end
 end
 
