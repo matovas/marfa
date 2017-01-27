@@ -15,7 +15,7 @@ class String
   def to_class_name
     parts = downcase.split('/')
     parts.each(&:capitalize!)
-    parts.join('')
+    parts.join('').gsub(%r{-}, '')
   end
 
   # Convert string to url part
