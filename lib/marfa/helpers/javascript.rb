@@ -34,8 +34,8 @@ module Marfa
           language_out: 'ES5_STRICT'
         )
 
-        haml = haml :"#{path}", layout: false
-        code = js_transpile(haml)
+        template = haml :"#{path}", :layout => false
+        code = js_transpile(template)
         code = closure.compile(code)
         '<script>' + code + '</script>'
       end
