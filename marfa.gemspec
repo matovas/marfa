@@ -3,9 +3,9 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.0.3.8'
+  s.version     = '0.0.3.9'
   s.platform    = Gem::Platform::RUBY
-  s.date        = Time.now.strftime("%Y-%m-%d")
+  s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'Little Sinatra-based framework'
   s.description = 'Little Sinatra-based framework'
   s.authors     = ['Max Krechetov', 'Roman Yakushev', 'Anatoly Matov']

@@ -20,6 +20,7 @@ module Marfa
 
   private
 
+  # Configure controller settings
   def self._configure_settings(app)
     _default_settings
 
@@ -28,6 +29,7 @@ module Marfa
     end
   end
 
+  # Configure extending modules
   def self._configure_ext_modules(app)
     app.configure do
       app.use Rack::Csrf, raise: true if Marfa.config.csrf_enabled

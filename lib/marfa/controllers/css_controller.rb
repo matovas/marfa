@@ -9,11 +9,11 @@ module Marfa
       include Marfa::Helpers::Style
 
       get '/css/main.:device.css' do |device|
-        render_main_style(device)
+        render_style({ section: 'main', device: device })
       end
 
       get '/css/:section.:range.:device.css' do |section, range, device|
-        render_page_style(section, range, device)
+        render_style({ root_path: '/pages/', section: section, range: range, device: device })
       end
     end
   end
