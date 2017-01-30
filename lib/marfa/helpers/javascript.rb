@@ -28,13 +28,13 @@ module Marfa
       end
 
       # https://developers.google.com/closure/compiler/docs/compilation_levels
-      def js_import_from_haml(path)
+      def js_import_from_haml(path, data = {})
         closure = Closure::Compiler.new(
           compilation_level: 'SIMPLE_OPTIMIZATIONS',
           language_out: 'ES5_STRICT'
         )
 
-        template = haml :"#{path}", :layout => false
+        template = haml :"#{path}", :layout => false, :locals => data
         code = js_transpile(template)
         code = closure.compile(code)
         '<script>' + code + '</script>'
