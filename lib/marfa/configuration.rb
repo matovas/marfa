@@ -33,7 +33,7 @@ module Marfa
   def self._configure_ext_modules(app)
     app.configure do
       app.use Rack::Csrf, raise: true if Marfa.config.csrf_enabled
-      app.use HtmlCompressor::Rack if Marfa.config.compression_enabled
+      app.use HtmlCompressor::Rack, Marfa.config.html_compression if Marfa.config.html_compression[:enabled]
     end
   end
 
