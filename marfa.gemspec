@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.0.3.11'
+  s.version     = '0.1'
   s.platform    = Gem::Platform::RUBY
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'Little Sinatra-based framework'
@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency('haml')
   s.add_dependency('puma')
   s.add_dependency('rack_csrf')
-  s.add_dependency('uglifier', '~> 3.0', '>= 3.0.4')
   s.add_dependency('rake')
   s.add_dependency('redis')
   s.add_dependency('rest-client')
