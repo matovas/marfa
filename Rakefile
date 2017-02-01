@@ -36,7 +36,26 @@ def create_marfa_config_file
     file.puts 'Marfa.config.csrf_enabled = false'
     file.puts ''
     file.puts '# HTML Compression'
-    file.puts 'Marfa.config.compression_enabled = false'
+    file.puts 'Marfa.config.html_compression_options = {'
+    file.puts ':enabled => true,
+  :remove_multi_spaces => true,
+  :remove_comments => true,
+  :remove_intertag_spaces => false,
+  :remove_quotes => true,
+  :compress_css => false,
+  :compress_javascript => false,
+  :simple_doctype => false,
+  :remove_script_attributes => true,
+  :remove_style_attributes => true,
+  :remove_link_attributes => true,
+  :remove_form_attributes => false,
+  :remove_input_attributes => true,
+  :remove_javascript_protocol => true,
+  :remove_http_protocol => false,
+  :remove_https_protocol => false,
+  :preserve_line_breaks => false,
+  :simple_boolean_attributes => true'
+    file.puts '}'
     file.puts ''
     file.puts '# CSS Minifying'
     file.puts 'Marfa.config.minify_css = true'
