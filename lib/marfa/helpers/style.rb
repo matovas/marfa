@@ -1,5 +1,6 @@
 require 'sass/plugin'
 require 'csso'
+require 'fileutils'
 
 # Rendering and caching style
 module Marfa
@@ -27,13 +28,14 @@ module Marfa
         return if options[:device].nil?
 
         root_path = options[:root_path] || '/'
+        path_to_css = settings.public_folder.to_s + '/css' + root_path
 
         file_name =
           [options[:section], options[:range], options[:device]]
           .reject { |opt| opt.nil? }
           .join('.') + '.css'
 
-        path = settings.public_folder.to_s + '/css' + root_path + file_name
+        full_path = path_to_css + file_name
 
         scss_path =
           root_path +
@@ -41,11 +43,12 @@ module Marfa
             .reject { |opt| opt.nil? }
             .join('/')
 
-        if File.exist?(path) && Marfa.config.cache_styles
-          send_file(File.join(settings.public_folder.to_s + '/css', File.basename(file_name)), type: 'text/css')
+        if File.exist?(full_path) && Marfa.config.cache_styles
+          send_file(full_path, type: 'text/css')
         else
+          FileUtils.mkdir_p(path_to_css) unless Dir.exist?(path_to_css)
           styles = create_style(scss_path, options[:device])
-          File.write(path, styles) if Marfa.config.cache_styles
+          File.write(full_path, styles) if Marfa.config.cache_styles
           content_type 'text/css', charset: 'utf-8', cache: 'false'
           styles
         end

@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency('haml')
   s.add_dependency('puma')
   s.add_dependency('rack_csrf')
+  s.add_dependency('uglifier', '~> 3.0', '>= 3.0.4')
   s.add_dependency('rake')
   s.add_dependency('redis')
   s.add_dependency('rest-client')
