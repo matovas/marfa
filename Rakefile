@@ -36,7 +36,7 @@ def create_marfa_config_file
     file.puts 'Marfa.config.csrf_enabled = false'
     file.puts ''
     file.puts '# HTML Compression'
-    file.puts 'Marfa.config.html_compression = {'
+    file.puts 'Marfa.config.html_compression_options = {'
     file.puts ':enabled => true,
   :remove_multi_spaces => true,
   :remove_comments => true,
