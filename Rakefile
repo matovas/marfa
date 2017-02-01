@@ -1,5 +1,7 @@
 require 'fileutils'
 require 'rake'
+require 'babel/transpiler'
+require 'closure-compiler'
 
 include FileUtils
 
@@ -25,6 +27,8 @@ def create_marfa_config_file
     file.puts ''
     file.puts '# Static files content path'
     file.puts "Marfa.config.content_path = '/images/content/'"
+    file.puts ''
+    file.puts 'Marfa.config.cache_styles = true'
     file.puts ''
     file.puts '# Public folder'
     file.puts "Marfa.config.public_folder = File.expand_path('./static')"
@@ -109,6 +113,12 @@ def create_bootstrap_file
   end
 end
 
+def js_transpile(path, is_plain_text = true)
+  path = File.read(path) unless is_plain_text
+  result = Babel::Transpiler.transform(path)
+  result['code']
+end
+
 task :default do
   puts 'Please specify command'
 end
@@ -139,6 +149,30 @@ task :start, [:home_path, :project_dir] do |t, args|
     create_bootstrap_file
     create_rackup_config_file
     puts 'Config files are created'
-
   end
+end
+
+task :transpile_js, [:home_path, :search_dir, :output_dir] do |t, args|
+  puts 'Starting js transpile'
+
+  cd args[:home_path] + args[:search_dir], verbose: true
+
+  Dir[args[:home_path] + args[:search_dir] + '/**/*.js'].each do |path|
+    puts "Processing #{path}"
+
+    closure = Closure::Compiler.new(
+      compilation_level: 'SIMPLE_OPTIMIZATIONS',
+      language_out: 'ES5_STRICT'
+    )
+
+    code = js_transpile(path, false)
+    code = closure.compile(code)
+    output_path = args[:home_path] + args[:output_dir]
+    mkdir_p(output_path)
+
+    File.open(output_path + '/' + path.split('/').last, 'w') do |f|
+      f.puts code
+    end
+  end
+
 end

@@ -4,7 +4,7 @@ require 'fileutils'
 if ARGV.length > 1
   command = ARGV[0]
   rake_path = File.expand_path('../../Rakefile', __FILE__)
-  system "rake -f #{rake_path} #{command}[#{FileUtils.pwd},#{ARGV[1]}]"
+  system "rake -f #{rake_path} #{command}[#{FileUtils.pwd},#{ARGV[1]},#{ARGV[2]}]"
 
   if $?.exitstatus > 0
     puts 'Failed'

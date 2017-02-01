@@ -1,6 +1,8 @@
 require 'babel/transpiler'
 require 'closure-compiler'
 
+# TODO: Remove in v0.2
+
 # Javascript
 module Marfa
   # Helpers for Javascript
