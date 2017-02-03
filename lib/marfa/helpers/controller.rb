@@ -47,7 +47,7 @@ module Marfa
       # @example
       #   render_block('index/index', ['tag1', 'tag2'])
       # @return [String] rendered block
-      def render_component(path, tags = [])
+      def render_component(path, tags = [], query = {})
         # TODO: Improve caching with parameters
         content = get_cached_content('block', path, tags)
         return content unless content.nil?
@@ -57,7 +57,7 @@ module Marfa
 
         attrs = {
           user_data: @user_data || {},
-          query: params.to_h
+          query: query
         }
 
         block = Object.const_get(classname).new
