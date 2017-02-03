@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.1.1'
+  s.version     = '0.1.2'
   s.platform    = Gem::Platform::RUBY
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'Little Sinatra-based framework'
@@ -32,4 +32,5 @@ Gem::Specification.new do |s|
   s.add_dependency('csso-rails', '~> 0.5.0')
   s.add_dependency('yard')
   s.add_dependency('yard-sinatra')
+  s.add_dependency('compass')
 end

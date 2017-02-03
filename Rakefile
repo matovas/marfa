@@ -2,7 +2,9 @@ require 'fileutils'
 require 'rake'
 require 'babel/transpiler'
 require 'closure-compiler'
-
+# require 'sass/plugin'
+# require 'sass/engine'
+# require 'csso'
 include FileUtils
 
 # Default marfa configuration
@@ -119,6 +121,42 @@ def js_transpile(path, is_plain_text = true)
   result['code']
 end
 
+# def device_names
+#   [
+#     'desktop',
+#     'smartphone',
+#     'tablet',
+    # 'feature phone',
+    # 'console',
+    # 'tv',
+    # 'car browser',
+    # 'smart display',
+    # 'camera',
+    # 'portable media player',
+    # 'phablet'
+  # ]
+# end
+
+# Create styles
+# @param [String] scss_path - path to scss file
+# @param [String] device - device type
+# def create_style(scss_path, device)
+#   dynamic_vars(device)
+#   template = File.read(scss_path)
+#   sass_engine = Sass::Engine.new(template, {syntax: :scss})
+#   output = sass_engine.render
+#   p output
+#   Csso.optimize(output)
+# end
+#
+#
+# def dynamic_vars(device, section = 'root')
+#   Sass::Plugin.options[:custom] ||= {}
+#   Sass::Plugin.options[:custom][:device] = device
+#   Sass::Plugin.options[:custom][:section] = section
+#   # Sass::Plugin.options[:custom][:contentPath] = Marfa.config.content_path
+# end
+
 task :default do
   puts 'Please specify command'
 end
@@ -157,7 +195,12 @@ task :transpile_js, [:home_path, :search_dir, :output_dir] do |t, args|
 
   cd args[:home_path] + args[:search_dir], verbose: true
 
-  Dir[args[:home_path] + args[:search_dir] + '/**/*.js'].each do |path|
+  search_dir = args[:search_dir] || ''
+  output_dir = args[:output_dir] || '/static/js'
+
+  cd args[:home_path] + search_dir, verbose: true
+
+  Dir[args[:home_path] + search_dir + '/**/*.js'].each do |path|
     puts "Processing #{path}"
 
     closure = Closure::Compiler.new(
@@ -167,8 +210,8 @@ task :transpile_js, [:home_path, :search_dir, :output_dir] do |t, args|
 
     code = js_transpile(path, false)
     code = closure.compile(code)
-    output_path = args[:home_path] + args[:output_dir]
-    mkdir_p(output_path)
+    output_path = args[:home_path] + output_dir
+    mkdir_p(output_path) unless Dir.exist?(output_path)
 
     File.open(output_path + '/' + path.split('/').last, 'w') do |f|
       f.puts code
@@ -176,3 +219,30 @@ task :transpile_js, [:home_path, :search_dir, :output_dir] do |t, args|
   end
 
 end
+
+# task :compile_css, [:home_path, :search_dir, :output_dir] do |t, args|
+#   search_dir = args[:search_dir] || ''
+#   output_dir = args[:output_dir] || '/static/css'
+#
+#   Dir[args[:home_path] + search_dir + '/**/*.scss'].each do |path|
+#     puts "Processing #{path}"
+#
+#     output_path = args[:home_path] + output_dir
+#     mkdir_p(output_path) unless Dir.exist?(output_path)
+#
+#     device_names.each do |device|
+#       full_path =
+#         output_path +
+#         '/' +
+#         path.split('/')
+#         .last
+#         .gsub('scss', '') +
+#         "#{device}.css"
+#
+#       styles = create_style(path, device)
+#       File.write(full_path, styles)
+#     end
+#
+#   end
+#
+# end
