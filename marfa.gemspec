@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.1.3'
+  s.version     = '0.1.4'
   s.platform    = Gem::Platform::RUBY
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'Little Sinatra-based framework'
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email       = 'mvkrechetov@gmail.com'
   s.require_paths = ['lib']
   s.files       = `git ls-files`.split("\n")
-  s.executables = ['marfa']
+  s.executables = ['marfa', 'marfa-start', 'marfa-build-js']
   s.homepage    = 'http://rubygems.org/gems/marfa'
   s.license     = 'MIT'
 

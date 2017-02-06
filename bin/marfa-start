@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+require 'optparse'
+require 'marfa/file_templates'
+
+include FileUtils
+include Marfa::FileTemplates
+
+options = {
+  home_path: FileUtils.pwd,
+  project_name: nil
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: marfa-start [project_name]'
+
+  opts.on('-n', '--name name', 'Project name') do |project_name|
+    options[:project_name] = project_name
+  end
+
+  opts.on('-h', '--help', 'Displays help') do
+    puts opts
+    exit
+  end
+end
+
+parser.parse!
+
+if options[:project_name].nil?
+  print 'Enter project name: '
+  options[:project_name] = gets.chomp
+end
+
+project_name = options[:project_name]
+
+puts "Starting project #{project_name}"
+cd options[:home_path], verbose: true
+
+unless Dir.exist?(project_name)
+  puts 'Creating project folder...'
+
+  mkdir_p(project_name)
+  cd project_name, verbose: true
+
+  puts 'Creating project structure...'
+  mkdir_p(%w(app config static app/blocks app/controllers app/models app/views))
+  puts 'Project structure are created'
+
+  puts 'Creating configuration files...'
+
+  project_path = "#{options[:home_path]}/#{project_name}"
+
+  marfa_rb(project_path)
+  application_rb(project_path)
+  bootstrap_rb(project_path)
+  config_ru(project_path)
+
+  puts 'Configuration files are created.'
+  puts "Project #{project_name} is created succesfully."
+end
