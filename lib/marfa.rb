@@ -15,6 +15,7 @@ require 'marfa/helpers/sass_functions'
 require 'marfa/models/base_dto'
 require 'marfa/models/api_model'
 require 'marfa/models/db_model'
+require 'marfa/file_templates'
 
 # requires all submodules
 module Marfa
