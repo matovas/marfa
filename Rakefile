@@ -1,3 +1,6 @@
+# Warning: this is deprecated and will be removed in 0.2
+# TODO: remove in 0.2
+
 require 'fileutils'
 require 'rake'
 require 'babel/transpiler'
@@ -18,6 +21,7 @@ task :default do
 end
 
 task :start, [:home_path, :project_dir] do |t, args|
+  puts "Deprecation warning: this will be removed in marfa-0.2. Use marfa-start instead."
   project_dir = args[:project_dir]
 
   puts "Starting project #{project_dir}"
@@ -47,6 +51,7 @@ task :start, [:home_path, :project_dir] do |t, args|
 end
 
 task :transpile_js, [:home_path, :search_dir, :output_dir] do |t, args|
+  puts "Deprecation warning: this will be removed in marfa-0.2. Use marfa-build-js instead."
   puts 'Starting js transpile'
 
   cd args[:home_path] + args[:search_dir], verbose: true
