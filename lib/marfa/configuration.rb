@@ -18,6 +18,12 @@ module Marfa
     _configure_ext_modules(Marfa::Controllers::BaseController)
   end
 
+  # Configure Marfa in block
+  def self.configure
+    config if @config.nil?
+    yield @config
+  end
+
   private
 
   # Configure controller settings
