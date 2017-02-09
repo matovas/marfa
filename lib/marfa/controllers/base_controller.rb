@@ -3,7 +3,6 @@ require 'rack/csrf'
 require 'device_detector'
 require 'marfa/helpers/controller'
 require 'marfa/helpers/http/vary'
-require 'marfa/helpers/javascript'
 
 # Extending Marfa
 module Marfa
@@ -24,7 +23,6 @@ module Marfa
       # All methods defined below might be used in child controllers
       helpers Marfa::Helpers::Controller
       helpers Marfa::Helpers::HTTP::Vary
-      helpers Marfa::Helpers::Javascript
     end
   end
 end
