@@ -16,6 +16,7 @@ require 'marfa/models/base_dto'
 require 'marfa/models/api_model'
 require 'marfa/models/db_model'
 require 'marfa/file_templates'
+require 'marfa/css_version'
 
 # requires all submodules
 module Marfa
