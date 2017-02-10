@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.1.8'
+  s.version     = '0.1.9'
   s.platform    = Gem::Platform::RUBY
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'Little Sinatra-based framework'

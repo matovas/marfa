@@ -3,6 +3,7 @@ require 'rack/csrf'
 require 'device_detector'
 require 'marfa/helpers/controller'
 require 'marfa/helpers/http/vary'
+require 'marfa/css_version'
 
 # Extending Marfa
 module Marfa
@@ -12,6 +13,7 @@ module Marfa
     class BaseController < Sinatra::Base
       before do
         @device = DeviceDetector.new(request.user_agent).device_type
+        @css_version = Marfa.css_version
       end
 
       # Not Found page

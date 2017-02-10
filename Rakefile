@@ -80,30 +80,3 @@ task :transpile_js, [:home_path, :search_dir, :output_dir] do |t, args|
   end
 
 end
-
-# task :compile_css, [:home_path, :search_dir, :output_dir] do |t, args|
-#   search_dir = args[:search_dir] || ''
-#   output_dir = args[:output_dir] || '/static/css'
-#
-#   Dir[args[:home_path] + search_dir + '/**/*.scss'].each do |path|
-#     puts "Processing #{path}"
-#
-#     output_path = args[:home_path] + output_dir
-#     mkdir_p(output_path) unless Dir.exist?(output_path)
-#
-#     device_names.each do |device|
-#       full_path =
-#         output_path +
-#         '/' +
-#         path.split('/')
-#         .last
-#         .gsub('scss', '') +
-#         "#{device}.css"
-#
-#       styles = create_style(path, device)
-#       File.write(full_path, styles)
-#     end
-#
-#   end
-#
-# end
