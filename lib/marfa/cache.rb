@@ -61,7 +61,7 @@ module Marfa
     # @example
     #   Marfa.cache.create_key('block', 'offer/list', ['tag1', 'tag2'])
     # @return [String] key
-    def create_key(kind, path, tags)
+    def create_key(kind, path, tags = [])
       kind + '_' + path.tr('/', '_') + '__' + tags.join('_')
     end
 
