@@ -1,3 +1,5 @@
+require 'marfa/configuration'
+
 module Marfa
   module Helpers
     module Controller
@@ -36,7 +38,7 @@ module Marfa
       #   get_cached_content('page', 'index/index', ['tag1', 'tag2'])
       # @return [String] data from cache
       # @return [Nil]
-      def get_cached_content(kind, path, tags)
+      def get_cached_content(kind, path, tags = [])
         cache_key = Marfa.cache.create_key(kind, path, tags)
         return Marfa.cache.get(cache_key) if Marfa.cache.exist?(cache_key)
       end
@@ -44,15 +46,17 @@ module Marfa
       # Render block from cache, return html
       # @param path [String] - URL
       # @param tags [Array] - tag list
+      # @param query [Hash] - query params
+      # @param class_name [String] - class name to block
       # @example
       #   render_block('index/index', ['tag1', 'tag2'])
       # @return [String] rendered block
-      def render_component(path, tags = [], query = {})
+      def render_block(path, tags = [], query = {}, class_name = nil)
         # TODO: Improve caching with parameters
         content = get_cached_content('block', path, tags)
         return content unless content.nil?
 
-        classname = path.to_class_name + 'Block'
+        classname = class_name || (path.to_class_name + 'Block')
         return unless Object.const_defined?(classname)
 
         attrs = {
@@ -61,38 +65,25 @@ module Marfa
         }
 
         block = Object.const_get(classname).new
-
         data = block.get_data(attrs)
         cache_key = Marfa.cache.create_key('block', path, tags)
-        full_path = 'components/' + path
+        full_path = Marfa.config.block_templates_path + '/' + path
 
         render_cached_content(cache_key, full_path, data)
       end
 
-      # Render block from cache, return html
-      # DEPRECATED
+      # Render block from cache, return html without class eval
       # @param path [String] - URL
-      # @param tags [Array] - tag list
+      # @param data [Hash] - data to render
       # @example
-      #   render_block('index/index', ['tag1', 'tag2'])
+      #   render_static_block('index/index', ['tag1', 'tag2'])
       # @return [String] rendered block
-      def render_block(path, tags)
-        # TODO: Improve caching with parameters
-        content = get_cached_content('block', path, tags)
+      def render_static_block(path, data = {})
+        content = get_cached_content('block', path)
         return content unless content.nil?
 
-        classname = path.to_class_name + 'Block'
-        return unless Object.const_defined?(classname)
-
-        attrs = {
-          user_data: @user_data || {},
-          query: params.to_h
-        }
-
-        block = Object.const_get(classname).new
-        data = block.get_data(attrs)
-        cache_key = Marfa.cache.create_key('block', path, tags)
-        full_path = 'blocks/' + path
+        cache_key = Marfa.cache.create_key('block', path)
+        full_path = Marfa.config.block_templates_path + '/' + path
 
         render_cached_content(cache_key, full_path, data)
       end
@@ -121,6 +112,9 @@ module Marfa
         html = render_page(path, tags, data) if html.nil?
         html
       end
+
+      alias_method :render_component, :render_block
+      alias_method :render_static_component, :render_static_block
     end
   end
 end

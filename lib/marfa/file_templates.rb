@@ -33,7 +33,11 @@ Marfa.configure do |cfg|
   # Static files content path
   cfg.content_path = '/images/content/'
 
+  # Styles caching
   cfg.cache_styles = true
+
+  # Blocks path
+  cfg.block_templates_path = 'blocks'
 
   # Public folder
   cfg.public_folder = File.expand_path('./static')
@@ -93,7 +97,10 @@ Dir[File.dirname(__FILE__) + '/controllers/**/*.rb'].each { |file| require file 
     # @param [String] project_path - path to create_file
     def config_ru(project_path)
       File.open("#{project_path}/config.ru", 'w') do |file|
-        file.puts "require 'marfa'
+        file.puts "Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
+require 'marfa'
 require File.dirname(__FILE__) + '/app/bootstrap'
 require File.dirname(__FILE__) + '/config/marfa'
 
