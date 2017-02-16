@@ -12,9 +12,14 @@ module Marfa
     # Write data to cache
     # @example
     #   Marfa.cache.set('key', 'value', 7200)
-    def set(key, value, _time = @config[:expiration_time])
+    def set(key, value, _time = nil)
       return unless @config[:enabled]
-      @redis.set(key, value)
+      if time.is_a? Numeric
+          @redis.set(key, value, ex: _time) # ex - is seconds
+      else
+        @redis.set(key, value) #infinite
+      end
+
     end
 
     # Get data from cache

@@ -3,6 +3,11 @@ require 'marfa/configuration'
 module Marfa
   module Helpers
     module Controller
+
+      def render_content(path, data)
+        haml :"#{path}", locals: data
+      end
+
       # Rendering cached content
       # @param cache_key [String] key
       # @param path [String] - URL
@@ -10,10 +15,10 @@ module Marfa
       # @example
       #   render_cached_content('some_key', 'path/url', {})
       # @return [String] rendered content
-      def render_cached_content(cache_key, path, data = {})
+      def render_cached_content(cache_key, path, data = {}, cache_time = Marfa.config.cache[:expiration_time])
         return Marfa.cache.get(cache_key) if Marfa.cache.exist?(cache_key)
-        output = haml :"#{path}", locals: data
-        Marfa.cache.set(cache_key, output)
+        output = render_content(path, data)
+        Marfa.cache.set(cache_key, output, cache_time)
         output
       end
 
@@ -24,9 +29,11 @@ module Marfa
       # @example
       #   render_page('index', ['tag1', 'tag2'], {})
       # @return [String] rendered content
-      def render_page(path, tags, data)
-        cache_key = Marfa.cache.create_key('page', path, tags)
+      def render_page(path, tags, data, cache_time = Marfa.config.cache[:expiration_time])
         full_path = 'pages/' + path
+        return render_content(full_path, data) if cache_time > 0
+
+        cache_key = Marfa.cache.create_key('page', path, tags)
         render_cached_content(cache_key, full_path, data)
       end
 
@@ -51,10 +58,12 @@ module Marfa
       # @example
       #   render_block('index/index', ['tag1', 'tag2'])
       # @return [String] rendered block
-      def render_block(path, tags = [], query = {}, class_name = nil)
+      def render_block(path, tags = [], query = {}, class_name = nil, cache_time = Marfa.config.cache[:expiration_time])
         # TODO: Improve caching with parameters
-        content = get_cached_content('block', path, tags)
-        return content unless content.nil?
+        if cache_time > 0
+          content = get_cached_content('block', path, tags)
+          return content unless content.nil?
+        end
 
         classname = class_name || (path.to_class_name + 'Block')
         return unless Object.const_defined?(classname)
@@ -66,9 +75,13 @@ module Marfa
 
         block = Object.const_get(classname).new
         data = block.get_data(attrs)
-        cache_key = Marfa.cache.create_key('block', path, tags)
+
+
         full_path = Marfa.config.block_templates_path + '/' + path
 
+        return render_content(full_path, data) if cache_time > 0
+
+        cache_key = Marfa.cache.create_key('block', path, tags)
         render_cached_content(cache_key, full_path, data)
       end
 
@@ -107,9 +120,13 @@ module Marfa
       # @example
       #   get_html('index/index', ['tag1', 'tag2'], {})
       # @return [String] HTML
-      def get_html(path, tags, data)
-        html = get_cached_content('page', path, tags)
-        html = render_page(path, tags, data) if html.nil?
+      def get_html(path, tags, data, cache_time = Marfa.config.cache[:expiration_time])
+        if cache_time > 0
+          html = get_cached_content('page', path, tags)
+          html = render_page(path, tags, data, cache_time) if html.nil?
+        else
+          html = render_page(path, tags, data, cache_time)
+        end
         html
       end
 
