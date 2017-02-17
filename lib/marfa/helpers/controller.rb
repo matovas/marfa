@@ -31,7 +31,7 @@ module Marfa
       # @return [String] rendered content
       def render_page(path, tags, data, cache_time = Marfa.config.cache[:expiration_time])
         full_path = 'pages/' + path
-        return render_content(full_path, data) if cache_time > 0
+        return render_content(full_path, data) if cache_time == 0
 
         cache_key = Marfa.cache.create_key('page', path, tags)
         render_cached_content(cache_key, full_path, data)
@@ -79,7 +79,7 @@ module Marfa
 
         full_path = Marfa.config.block_templates_path + '/' + path
 
-        return render_content(full_path, data) if cache_time > 0
+        return render_content(full_path, data) if cache_time == 0
 
         cache_key = Marfa.cache.create_key('block', path, tags)
         render_cached_content(cache_key, full_path, data)
