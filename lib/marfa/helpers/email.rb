@@ -23,7 +23,16 @@ module Marfa
           via_options: config
         }
 
-        Pony.mail(to: options[:to], subject: options[:subject], html_body: body)
+        mail = {
+            to: options[:to],
+            subject: options[:subject],
+            html_body: body
+        }
+
+        mail[:from] = config[:from] unless config[:from].nil?
+
+        Pony.mail(mail)
+
       end
     end
   end
