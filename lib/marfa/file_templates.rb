@@ -27,7 +27,8 @@ Marfa.configure do |cfg|
     host: '',
     port: 0,
     db: 0,
-    expiration_time: 3600
+    expiration_time: 3600,
+    use_device: true # use device name in page, blocks cache
   }
 
   # Static files content path
@@ -47,6 +48,12 @@ Marfa.configure do |cfg|
 
   # CSRF Protection
   cfg.csrf_enabled = false
+
+  # gem device_detector
+  cfg.device_detector = {
+      enabled: true,
+      default_device: 'smartphone'
+  }
 
   # HTML Compression
   cfg.html_compression_options = {

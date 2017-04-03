@@ -12,7 +12,11 @@ module Marfa
     # base controller
     class BaseController < Sinatra::Base
       before do
-        @device = DeviceDetector.new(request.user_agent).device_type
+        if Marfa.config.device_detector[:enabled]
+          @device = DeviceDetector.new(request.user_agent).device_type
+          @device = Marfa.config.device_detector[:default_device] if @device.nil?
+        end
+
         @css_version = Marfa.css_version
       end
 
