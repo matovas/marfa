@@ -51,6 +51,17 @@ module Marfa
         nil
       end
 
+      # convert query json to tags
+      # @param query [Hash] - hash of params
+      # @return [Array] of strings key-value or []
+      def query_to_tags(query)
+        result = []
+        if query.is_a? Hash
+          query.each {|key,value| result << "#{key}-#{value}"}
+        end
+        result
+      end
+
       # Render block from cache, return html
       # @param options [Hash] - options hash
       # @example
@@ -60,6 +71,8 @@ module Marfa
         # TODO: Improve caching with parameters
         cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
         tags = options[:tags] || []
+
+        tags = tags + query_to_tags(options[:query])
 
         if cache_time > 0
           content = get_cached_content('block', options[:path], tags)
