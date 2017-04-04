@@ -30,10 +30,13 @@ module Marfa
       def render_page(options)
         cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
 
+        kind = 'page'
+        kind += "-#{@device}" if Marfa.config.cache[:use_device]
+
         full_path = 'pages/' + options[:path]
         return render_content(full_path, options[:data]) if cache_time == 0
 
-        cache_key = Marfa.cache.create_key('page', options[:path], options[:tags])
+        cache_key = Marfa.cache.create_key(kind, options[:path], options[:tags])
         render_cached_content(cache_key, full_path, options[:data])
       end
 
@@ -61,8 +64,11 @@ module Marfa
         cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
         tags = options[:tags] || []
 
+        kind = 'block'
+        kind += "-#{@device}" if Marfa.config.cache[:use_device]
+
         if cache_time > 0
-          content = get_cached_content('block', options[:path], tags)
+          content = get_cached_content(kind, options[:path], tags)
           return content unless content.nil?
         end
 
@@ -80,7 +86,7 @@ module Marfa
 
         return render_content(full_path, data) if cache_time == 0
 
-        cache_key = Marfa.cache.create_key('block', options[:path], tags)
+        cache_key = Marfa.cache.create_key(kind, options[:path], tags)
         render_cached_content(cache_key, full_path, data)
       end
 
@@ -122,7 +128,10 @@ module Marfa
         cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
 
         if cache_time > 0
-          html = get_cached_content('page', options[:path], options[:tags])
+          kind = 'page'
+          kind += "-#{@device}" if Marfa.config.cache[:use_device]
+
+          html = get_cached_content(kind, options[:path], options[:tags])
           html = render_page(options) if html.nil?
         else
           html = render_page(options)
