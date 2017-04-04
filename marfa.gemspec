@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.3.2'
+  s.version     = '0.3.3'
   s.required_ruby_version = '>= 2.3.0'
   s.platform    = Gem::Platform::RUBY
   s.date        = Time.now.strftime('%Y-%m-%d')

@@ -94,6 +94,8 @@ module Marfa
 
         block = Object.const_get(classname).new
         data = block.get_data(attrs)
+        data = data.merge(options[:locals]) unless options[:locals].nil?
+
         full_path = Marfa.config.block_templates_path + '/' + options[:path]
 
         return render_content(full_path, data) if cache_time == 0
