@@ -54,6 +54,17 @@ module Marfa
         nil
       end
 
+      # convert query json to tags
+      # @param query [Hash] - hash of params
+      # @return [Array] of strings key-value or []
+      def query_to_tags(query)
+        result = []
+        if query.is_a? Hash
+          query.each { |key, value| result << "#{key}-#{value}" }
+        end
+        result
+      end
+
       # Render block from cache, return html
       # @param options [Hash] - options hash
       # @example
@@ -66,6 +77,7 @@ module Marfa
 
         kind = 'block'
         kind += "-#{@device}" if Marfa.config.cache[:use_device]
+        tags += query_to_tags(options[:query])
 
         if cache_time > 0
           content = get_cached_content(kind, options[:path], tags)
