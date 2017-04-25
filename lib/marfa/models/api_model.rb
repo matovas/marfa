@@ -20,32 +20,6 @@ module Marfa
         get_raw_data(params)
       end
 
-      # Method that make request to delete data from API
-      # @param model_id [Fixnum] id to delete
-      # @example
-      #   BaseModel.delete(19)
-      # @return [Hash]
-      def self.delete(model_id)
-        model_name = name.downcase
-        # data = {}
-
-        # begin
-        #   path = "#{Marfa.config.api_server}#{model_name}/#{model_id.to_s}"
-        #   response = RestClient.delete(path, { params: {}, headers: {} })
-        #   data = JSON.parse(response.body, symbolize_names: true)
-        # rescue
-        #   p '404 or ParserError'
-        # end
-
-        # Temporary code
-        p "#{Marfa.config.api_server}#{model_name}/#{model_id}"
-        p model_id
-
-        data = { deleted: true }
-        Marfa.cache.delete_by_pattern(model_name)
-        data
-      end
-
       # "Raw" data getting
       # @param params [Hash] - options hash
       # @example
@@ -58,8 +32,15 @@ module Marfa
         begin
           response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
           result = JSON.parse(response.body, symbolize_names: true)
-        rescue
-          p '404 or ParserError'
+        rescue => exception
+          if [:development, :test].include? Marfa.config.environment
+            p '========== Exception while making request: =========='
+            p "Path: #{Marfa.config.api_server}#{path}"
+            p 'Params:'
+            p params
+            p "#{exception.message} (#{exception.class})"
+            p '=================================================='
+          end
         end
 
         result

@@ -47,10 +47,14 @@ module Marfa
 
   # Default settings fields for apps
   def self._default_settings
-    @_default_settings = [
-      'public_folder',
-      'static_cache_control',
-      'views'
+    @_default_settings = %w[
+      public_folder
+      static_cache_control
+      views
+      environment
+      logging
+      dump_errors
+      show_exceptions
     ]
   end
 end
