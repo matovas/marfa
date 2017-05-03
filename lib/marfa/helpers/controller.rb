@@ -3,7 +3,12 @@ require 'marfa/configuration'
 module Marfa
   module Helpers
     module Controller
-
+      # Render content
+      # @param path [String] - URL
+      # @param data [Hash] - options hash
+      # @example
+      #   render_content('some_key', 'path/url', {})
+      # @return [String] rendered content
       def render_content(path, data)
         haml :"#{path}", locals: data
       end
@@ -137,7 +142,6 @@ module Marfa
       # @example
       #   get_html({ path: 'index', tags: ['tag1', 'tag2'], data: {} })
       # @return [String] HTML
-      # def get_html(path, tags, data, cache_time = Marfa.config.cache[:expiration_time])
       def get_html(options)
         cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
 
@@ -151,6 +155,15 @@ module Marfa
           html = render_page(options)
         end
         html
+      end
+
+      # Render pagination panel
+      # @param data [Hash] - pages info data
+      # @param _template [String] - template to render
+      # @return [String] HTML
+      def render_pagination(data, _template=nil)
+        template = _template || Marfa.config.pagination_template
+        haml :"#{template}", locals: data
       end
 
       alias_method :render_component, :render_block
