@@ -43,7 +43,7 @@ module Marfa
           result = JSON.parse(response.body, symbolize_names: true)
         rescue => exception
           if [:development, :test].include? Marfa.config.environment
-            _log_exception(exception)
+            _log_exception(exception, path)
           end
         end
 
@@ -64,7 +64,7 @@ module Marfa
           result[:data_pages] = response.headers[:x_pages].to_i unless response.headers[:x_pages].nil?
         rescue => exception
           if [:development, :test].include? Marfa.config.environment
-            _log_exception(exception)
+            _log_exception(exception, path)
           end
         end
 
@@ -72,7 +72,7 @@ module Marfa
       end
 
       # Log exceptions to console
-      def self._log_exception(e)
+      def self._log_exception(e, path)
         p '========== Exception while making request: =========='
         p "Path: #{Marfa.config.api_server}#{path}"
         p 'Params:'
