@@ -38,4 +38,11 @@ class String
     self.gsub(/<\/?[^>]*>/, '') # unless self.nil?
   end
 
+  # Convert string price to preferred view
+  # @example
+  #   "1042.42".to_price!
+  # @return [String]
+  def to_price!
+    self.split('.').first.reverse.gsub(/...(?=.)/, '\&;psniht&').reverse
+  end
 end
