@@ -43,6 +43,10 @@ class String
   #   "1042.42".to_price!
   # @return [String]
   def to_price!
+    # self.split('.') divides string into substring with '.' delimiter and returning array of this substrings
+    # .first returns the first element of the array
+    # .reverse returns a new string with the characters from str in reverse order
+    # .gsub(pattern, replacement) returns a copy of str with the all occurrences of pattern substituted for the second argument
     self.split('.').first.reverse.gsub(/...(?=.)/, '\&;psniht&').reverse
   end
 end
