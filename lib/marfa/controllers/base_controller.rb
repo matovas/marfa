@@ -13,7 +13,9 @@ module Marfa
     class BaseController < Sinatra::Base
       before do
         if Marfa.config.device_detector[:enabled]
-          @device = DeviceDetector.new(request.user_agent).device_type
+          client = DeviceDetector.new(request.user_agent)
+          @device = client.device_type
+          @browser = client.name
           @device = Marfa.config.device_detector[:default_device] if @device.nil?
         end
 
