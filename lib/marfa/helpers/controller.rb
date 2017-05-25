@@ -94,7 +94,8 @@ module Marfa
 
         attrs = {
           user_data: @user_data || {},
-          query: options[:query] || {}
+          query: options[:query] || {},
+          locals: options[:locals] || {}
         }
 
         block = Object.const_get(classname).new
