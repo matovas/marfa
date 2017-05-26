@@ -167,6 +167,36 @@ module Marfa
         haml :"#{template}", locals: data
       end
 
+      # Render block with data from cache, return html
+      # @param options [Hash] - options hash
+      # @example
+      #   render_block_with_data({ path: 'index/index', tags: ['tag1', 'tag2'] })
+      # @return [String] rendered block
+      def render_block_with_data(options)
+        # TODO: Improve caching with parameters
+        cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
+        tags = options[:tags] || []
+
+        kind = 'block'
+        kind += "-#{@device}" if Marfa.config.cache[:use_device]
+        tags += query_to_tags(options[:query])
+
+        if cache_time.positive?
+          content = get_cached_content(kind, options[:path], tags)
+          return content unless content.nil?
+        end
+
+        data = options[:data]
+        data = data.merge(options[:locals]) unless options[:locals].nil?
+
+        full_path = Marfa.config.block_templates_path + '/' + options[:path]
+
+        return render_content(full_path, data) if cache_time.zero?
+
+        cache_key = Marfa.cache.create_key(kind, options[:path], tags)
+        render_cached_content(cache_key, full_path, data)
+      end
+
       alias_method :render_component, :render_block
       alias_method :render_static_component, :render_static_block
     end

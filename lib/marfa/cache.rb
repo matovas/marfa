@@ -14,6 +14,7 @@ module Marfa
     #   Marfa.cache.set('key', 'value', 7200)
     def set(key, value, _time = nil)
       return unless @config[:enabled]
+      return if _time.zero?
       if _time.is_a? Numeric
           @redis.set(key, value, ex: _time) # ex - is seconds
       else

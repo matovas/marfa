@@ -37,10 +37,16 @@ module Marfa
       def self.get_raw_data(params)
         result = {}
         path = params[:path]
+        cache_key = "data_#{path}#{params[:query]}".scan(/\w+/).join('_')
 
         begin
-          response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
-          result = JSON.parse(response.body, symbolize_names: true)
+          if Marfa.cache.exist?(cache_key)
+            result = JSON.parse(Marfa.cache.get(cache_key), symbolize_names: true)
+          else
+            response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
+            Marfa.cache.set(cache_key, response.body, params[:cache_time] || 7200)
+            result = JSON.parse(response.body, symbolize_names: true)
+          end
         rescue => exception
           if [:development, :test].include? Marfa.config.environment
             _log_exception(exception, path, params)
@@ -56,17 +62,33 @@ module Marfa
       def self.get_raw_data_with_pagination(params)
         result = {}
         path = params[:path]
+        cache_key = "data_with_pagination_#{path}#{params[:query]}".scan(/\w+/).join('_')
 
         begin
-          response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
-          result[:data] = JSON.parse(response.body, symbolize_names: true)
-          result[:data_count] = response.headers[:x_count].to_i unless response.headers[:x_count].nil?
-          result[:data_pages] = response.headers[:x_pages].to_i unless response.headers[:x_pages].nil?
+          if Marfa.cache.exist?(cache_key)
+            result = JSON.parse(Marfa.cache.get(cache_key), symbolize_names: true)
+          else
+            response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
+            result[:data] = JSON.parse(response.body, symbolize_names: true)
+            result[:data_count] = response.headers[:x_count].to_i unless response.headers[:x_count].nil?
+            result[:data_pages] = response.headers[:x_pages].to_i unless response.headers[:x_pages].nil?
+            Marfa.cache.set(cache_key, result.to_json, params[:cache_time] || 7200)
+          end
         rescue => exception
           if [:development, :test].include? Marfa.config.environment
             _log_exception(exception, path, params)
           end
         end
+        # begin
+        #   response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
+        #   result[:data] = JSON.parse(response.body, symbolize_names: true)
+        #   result[:data_count] = response.headers[:x_count].to_i unless response.headers[:x_count].nil?
+        #   result[:data_pages] = response.headers[:x_pages].to_i unless response.headers[:x_pages].nil?
+        # rescue => exception
+        #   if [:development, :test].include? Marfa.config.environment
+        #     _log_exception(exception, path, params)
+        #   end
+        # end
 
         result
       end
