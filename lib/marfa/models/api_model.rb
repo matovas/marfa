@@ -79,16 +79,6 @@ module Marfa
             _log_exception(exception, path, params)
           end
         end
-        # begin
-        #   response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
-        #   result[:data] = JSON.parse(response.body, symbolize_names: true)
-        #   result[:data_count] = response.headers[:x_count].to_i unless response.headers[:x_count].nil?
-        #   result[:data_pages] = response.headers[:x_pages].to_i unless response.headers[:x_pages].nil?
-        # rescue => exception
-        #   if [:development, :test].include? Marfa.config.environment
-        #     _log_exception(exception, path, params)
-        #   end
-        # end
 
         result
       end
