@@ -37,7 +37,8 @@ module Marfa
       def self.get_raw_data(params)
         result = {}
         path = params[:path]
-        cache_key = "data_#{path}#{params[:query]}".scan(/\w+/).join('_')
+        cache_key = "data_#{path}#{params[:query]}".scan(/[a-zA-Zа-яА-Я0-9]+/).join('_')
+        cache_key = params[:cache_key] unless params[:cache_key].nil?
 
         begin
           if Marfa.cache.exist?(cache_key)
@@ -62,7 +63,8 @@ module Marfa
       def self.get_raw_data_with_pagination(params)
         result = {}
         path = params[:path]
-        cache_key = "data_with_pagination_#{path}#{params[:query]}".scan(/\w+/).join('_')
+        cache_key = "data_with_pagination_#{path}#{params[:query]}".scan(/[a-zA-Zа-яА-Я0-9]+/).join('_')
+        cache_key = params[:cache_key] unless params[:cache_key].nil?
 
         begin
           if Marfa.cache.exist?(cache_key)
