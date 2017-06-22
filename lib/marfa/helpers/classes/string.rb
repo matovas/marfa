@@ -24,9 +24,8 @@ class String
   # @return [String] changed string
   def to_url
     val = self.strip_tags!
-    val = val.gsub(':', '')
-    val = val.gsub(' ', '-')
-    val = val.gsub('/', '-')
+    val = val.gsub(/[ —\/]/, '-')#TODO: длинный пробел
+    val = val.gsub(/[_+.,!?@#$%^&*()\[\]{}:;\/\\|<>"']/, '') #TODO: больше символов!
     val.downcase
   end
 
