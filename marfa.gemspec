@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_dependency('haml', '~> 4.0', '>= 4.0.7')
-  s.add_dependency('puma', '3.6.2')
+  s.add_dependency('puma', '>3.8.2')
   s.add_dependency('rack_csrf', '~> 2.6')
   s.add_dependency('rake', '~> 12')
   s.add_dependency('redis', '~> 3.3', '>= 3.3.3')
