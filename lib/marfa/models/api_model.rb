@@ -35,6 +35,7 @@ module Marfa
       #   self.get_raw_data({ path: 'category/list' })
       # @return [Hash]
       def self.get_raw_data(params)
+        params[:query] = params[:query].delete_if { |k, v| v.nil? } unless params[:query].nil?
         result = {}
         path = params[:path]
         cache_key = "data_#{path}#{params[:query]}".scan(/[a-zA-Zа-яА-Я0-9]+/).join('_')
@@ -61,6 +62,7 @@ module Marfa
       # @param params [Hash] - options hash
       # @return [Hash]
       def self.get_raw_data_with_pagination(params)
+        params[:query] = params[:query].delete_if { |k, v| v.nil? } unless params[:query].nil?
         result = {}
         path = params[:path]
         cache_key = "data_with_pagination_#{path}#{params[:query]}".scan(/[a-zA-Zа-яА-Я0-9]+/).join('_')
