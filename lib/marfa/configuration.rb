@@ -14,7 +14,7 @@ module Marfa
     return if @config.to_h.empty?
 
     _configure_settings(Marfa::Controllers::BaseController)
-    _configure_settings(Marfa::Controllers::CssController)
+    _configure_settings(Marfa::Controllers::CssController) if Marfa.config.use_css_build
     _configure_ext_modules(Marfa::Controllers::BaseController)
   end
 
