@@ -7,4 +7,13 @@ class Numeric
   def to_price!
     self.to_s.to_price!
   end
+
+  # Check if digit is blank
+  # 0.blank? => true
+  # 1.blank? => false
+  # @return [true, false]
+  def blank?
+    return true if zero?
+    false
+  end
 end
