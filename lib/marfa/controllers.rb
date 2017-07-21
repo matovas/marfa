@@ -6,9 +6,8 @@ module Marfa
     # Controllers for Rack run
     # @return [Array] Controllers list
     def self.controllers_list
-      @controllers_list = [
-        CssController
-      ]
+      @controllers_list = []
+      @controllers_list << CssController if Marfa.config.use_css_build
     end
   end
 end

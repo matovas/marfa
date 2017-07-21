@@ -15,74 +15,83 @@ module Marfa
       File.open("#{project_path}/config/marfa.rb", 'w') do |file|
         file.puts "# Marfa configuration file
 Marfa.configure do |cfg|
+  # Environment
+  cfg.environment = :development
+  # Request logging
+  cfg.logging = true
+  # Show error page with backtrace
+  cfg.show_exceptions = true
+  # log exception backtraces to STDERR
+  cfg.dump_errors = true
+
+  # Mode (not implemented yet)
+  cfg.mode = 'api'
+
   # Specifying API Server is needed
   cfg.api_server = ''
 
-  # Views path is needed
-  cfg.views = File.expand_path('./app/views')
-
-  # Cache config
-  cfg.cache = {
-    enabled: false,
-    host: '',
-    port: 0,
-    db: 0,
-    expiration_time: 3600,
-    use_device: true # use device name in page, blocks cache
-  }
-
-  # Static files content path
+  # Paths settings
   cfg.content_path = '/images/content/'
-
-  # Styles caching
-  cfg.cache_styles = true
-
-  # Blocks path
+  cfg.public_folder = File.expand_path('./static')
+  cfg.views = File.expand_path('./app/views')
   cfg.block_templates_path = 'blocks'
 
-  # Public folder
-  cfg.public_folder = File.expand_path('./static')
+  # Redis cache settings
+  cfg.cache = {
+    enabled: false,
+    host: 'localhost',
+    port: 6379,
+    db: 0,
+    expiration_time: 86_400
+  }
 
-  # Static files cache
-  cfg.static_cache_control = [:public, max_age: 2_592_000]
+  # Cache header
+  cfg.static_cache_control = [public, max_age: 0]
 
-  # CSRF Protection
+  # CSS build
+  cfg.use_css_build = false
+
+  # CSS file cache
+  cfg.cache_styles = false
+
+  # CSRF protection
   cfg.csrf_enabled = false
 
-  # gem device_detector
-  cfg.device_detector = {
-      enabled: true,
-      default_device: 'smartphone'
-  }
-
-  # HTML Compression
+  # HTML compression
   cfg.html_compression_options = {
     enabled: true,
-    remove_multi_spaces: true,
-    remove_comments: true,
-    remove_intertag_spaces: false,
-    remove_quotes: true,
-    compress_css: false,
-    compress_javascript: false,
-    simple_doctype: false,
-    remove_script_attributes: true,
-    remove_style_attributes: true,
-    remove_link_attributes: true,
-    remove_form_attributes: false,
-    remove_input_attributes: true,
-    remove_javascript_protocol: true,
-    remove_http_protocol: false,
-    remove_https_protocol: false,
-    preserve_line_breaks: false,
-    simple_boolean_attributes: true
+    remove_intertag_spaces: true
   }
 
-  # CSS Minifying
-  cfg.minify_css = true
-
-  # JS Minifying
+  # CSS/JS Minifying
+  cfg.minify_css = false
   cfg.minify_js = true
+
+  # Email settings
+  cfg.email = {
+    default: {
+      address: '',
+      port: '587',
+      enable_starttls_auto: true,
+      user_name: '',
+      password: '',
+      authentication: :plain,
+      domain: 'localhost.localdomain'
+    }
+  }
+
+  # Device detector
+  cfg.device_detector = {
+    enabled: true
+  }
+
+  # Pagination default template
+  cfg.pagination_template = '/pagination'
+
+  # Rack::Session secret
+  cfg.session_secret = 'secret'
 end
+
       "
       end
     end
@@ -109,16 +118,24 @@ Encoding.default_internal = Encoding::UTF_8
 
 require 'marfa'
 require File.dirname(__FILE__) + '/app/bootstrap'
-require File.dirname(__FILE__) + '/config/marfa'
+require File.dirname(__FILE__) + '/config/marfa/' + ENV['RACK_ENV']
+require 'pp' if ENV['RACK_ENV'] == 'production'
+
+p Using config #{File.dirname(__FILE__) + '/config/marfa/' + ENV['RACK_ENV']}
 
 Marfa.configure_app
 
 # Controllers auto-bootstrap
 controllers = Object.constants.select { |c| c.to_s.include? 'Controller' }
 controllers.map! { |controller| Object.const_get(controller) }
-controllers += Marfa::Controllers.controllers_list
+# controllers += Marfa::Controllers.controllers_list
 
-run Rack::Cascade.new(controllers)
+app_map = {
+  # '.css': CssController,
+  '/': IndexController
+}
+
+run Rack::AppMapper.new(controllers, app_map)
       "
       end
 
