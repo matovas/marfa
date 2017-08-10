@@ -9,6 +9,8 @@ module Marfa
       # Base model error
       class ModelError < StandardError; end
 
+      include Marfa::Helpers::HTTP
+
       @aliases = {}
 
       # Get data
@@ -45,7 +47,7 @@ module Marfa
           if Marfa.cache.exist?(cache_key)
             result = JSON.parse(Marfa.cache.get(cache_key), symbolize_names: true)
           else
-            response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
+            response = Rest.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
             Marfa.cache.set(cache_key, response.body, params[:cache_time] || 7200)
             result = JSON.parse(response.body, symbolize_names: true)
           end
@@ -72,7 +74,7 @@ module Marfa
           if Marfa.cache.exist?(cache_key)
             result = JSON.parse(Marfa.cache.get(cache_key), symbolize_names: true)
           else
-            response = RestClient.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
+            response = Rest.get("#{Marfa.config.api_server}#{path}", { params: params[:query], headers: {} })
             result[:data] = JSON.parse(response.body, symbolize_names: true)
             result[:data_count] = response.headers[:x_count].to_i unless response.headers[:x_count].nil?
             result[:data_pages] = response.headers[:x_pages].to_i unless response.headers[:x_pages].nil?

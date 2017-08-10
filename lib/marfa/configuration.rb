@@ -55,6 +55,7 @@ module Marfa
       views
       environment
       logging
+      logging_level
       dump_errors
       show_exceptions
     ]
