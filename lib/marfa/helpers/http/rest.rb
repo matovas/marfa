@@ -13,16 +13,25 @@ module Marfa
         # @example
         #   response = Rest.get(url, headers)
         # @return response [RestClient::Response]
-        def self.get(url, headers = {})
+        def self.get(url, headers = {}, &block)
           p "REST GET url = #{url}" if Marfa.config.logging_level > 0
           p "REST GET headers = #{headers}" if Marfa.config.logging_level > 0
 
-          response = RestClient.get(url, headers)
+          if block.nil?
+            response = RestClient.get(url, headers)
 
-          p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
-          p response.body if Marfa.config.logging_level > 1
+            p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
+            p response.body if Marfa.config.logging_level > 1
 
-          response
+            return response
+          else
+            RestClient.get(url, headers) do |response|
+              p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
+              p response.body if Marfa.config.logging_level > 1
+
+              block.call(response)
+            end
+          end
         end
 
         # HEAD request
@@ -31,16 +40,25 @@ module Marfa
         # @example
         #   response = Rest.head(url)
         # @return response [RestClient::Response]
-        def self.head(url, headers = {})
-          p "REST HEAD url = #{url}" if Marfa.config.logging_level > 0
-          p "REST HEAD headers = #{headers}" if Marfa.config.logging_level > 0
+        def self.head(url, headers = {}, &block)
+          p "REST HEA url = #{url}" if Marfa.config.logging_level > 0
+          p "REST HEA headers = #{headers}" if Marfa.config.logging_level > 0
 
-          response = RestClient.head(url, headers)
+          if block.nil?
+            response = RestClient.head(url, headers)
 
-          p "REST HEAD code  = #{response.code}" if Marfa.config.logging_level > 0
-          p response.body if Marfa.config.logging_level > 1
+            p "REST HEA code  = #{response.code}" if Marfa.config.logging_level > 0
+            p response.body if Marfa.config.logging_level > 1
 
-          response
+            return response
+          else
+            RestClient.head(url, headers) do |response|
+              p "REST HEA code  = #{response.code}" if Marfa.config.logging_level > 0
+              p response.body if Marfa.config.logging_level > 1
+
+              block.call(response)
+            end
+          end
         end
 
         # POST request
@@ -124,23 +142,32 @@ module Marfa
         # @example
         #   Rest.delete(url, payload, headers) do |response|
         # @return response [RestClient::Response]
-        def self.delete(url, payload, headers = {}, &block)
-          p "REST DELETE url    = #{url}" if Marfa.config.logging_level > 0
+        def self.delete(url, payload = {}, headers = {}, &block)
+          p "REST DEL url    = #{url}" if Marfa.config.logging_level > 0
           if Marfa.config.logging_level > 0
-            p "REST DELETE headers= #{headers}"
-            p "REST DELETE payload= #{payload}"
+            p "REST DEL headers= #{headers}"
+            p "REST DEL payload= #{payload}"
           end
 
-          RestClient::Request.execute(
-            method: :delete,
-            url: url,
-            payload: payload,
-            headers: headers
-          ) do |response|
-            p "REST DELETE code   = #{response.code}" if Marfa.config.logging_level > 0
+          if block.nil?
+            response = RestClient.delete(url, headers)
+
+            p "REST DEL code  = #{response.code}" if Marfa.config.logging_level > 0
             p response.body if Marfa.config.logging_level > 1
 
-            block.call(response)
+            return response
+          else
+            RestClient::Request.execute(
+                method: :delete,
+                url: url,
+                payload: payload,
+                headers: headers
+            ) do |response|
+              p "REST DEL code   = #{response.code}" if Marfa.config.logging_level > 0
+              p response.body if Marfa.config.logging_level > 1
+
+              block.call(response)
+            end
           end
         end
       end
