@@ -2,6 +2,8 @@ require 'ostruct'
 require 'marfa/controllers/base_controller'
 require 'marfa/controllers/css_controller'
 require 'htmlcompressor'
+require 'logger'
+$logger = Logger.new(STDOUT)
 
 module Marfa
   # Configuration

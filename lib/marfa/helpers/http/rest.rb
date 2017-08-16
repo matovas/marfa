@@ -14,20 +14,36 @@ module Marfa
         #   response = Rest.get(url, headers)
         # @return response [RestClient::Response]
         def self.get(url, headers = {}, &block)
-          p "REST GET url = #{url}" if Marfa.config.logging_level > 0
-          p "REST GET headers = #{headers}" if Marfa.config.logging_level > 0
+          if Marfa.config.logging_level > 0
+            $logger.info("REST GET url     = #{url}")
+            $logger.info("REST GET headers = #{headers}")
+          end
 
           if block.nil?
             response = RestClient.get(url, headers)
 
-            p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
+            if response.code == 200
+              $logger.info("REST GET code    = #{response.code}") if Marfa.config.logging_level > 0
+              $logger.info("REST DEL body    = #{response.body}") if Marfa.config.logging_level > 1
+            else
+              if Marfa.config.logging_level > 0
+                $logger.error("REST GET code    = #{response.code}")
+                $logger.error("REST GET body    = #{response.body}")
+              end
+            end
 
             return response
           else
             RestClient.get(url, headers) do |response|
-              p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
+              if response.code == 200
+                $logger.info("REST GET code    = #{response.code}") if Marfa.config.logging_level > 0
+                $logger.info("REST GET body    = #{response.body}") if Marfa.config.logging_level > 1
+              else
+                if Marfa.config.logging_level > 0
+                  $logger.error("REST GET code    = #{response.code}")
+                  $logger.error("REST GET body    = #{response.body}")
+                end
+              end
 
               block.call(response)
             end
@@ -41,20 +57,36 @@ module Marfa
         #   response = Rest.head(url)
         # @return response [RestClient::Response]
         def self.head(url, headers = {}, &block)
-          p "REST HEA url = #{url}" if Marfa.config.logging_level > 0
-          p "REST HEA headers = #{headers}" if Marfa.config.logging_level > 0
+          if Marfa.config.logging_level > 0
+            $logger.info("REST HEA url     = #{url}")
+            $logger.info("REST HEA headers = #{headers}")
+          end
 
           if block.nil?
             response = RestClient.head(url, headers)
 
-            p "REST HEA code  = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
+            if response.code == 200
+              $logger.info("REST HEA code    = #{response.code}") if Marfa.config.logging_level > 0
+              $logger.info("REST HEA body    = #{response.body}") if Marfa.config.logging_level > 1
+            else
+              if Marfa.config.logging_level > 0
+                $logger.error("REST HEA code    = #{response.code}")
+                $logger.error("REST HEA body    = #{response.body}")
+              end
+            end
 
             return response
           else
             RestClient.head(url, headers) do |response|
-              p "REST HEA code  = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
+              if response.code == 200
+                $logger.info("REST HEA code    = #{response.code}") if Marfa.config.logging_level > 0
+                $logger.info("REST HEA body    = #{response.body}") if Marfa.config.logging_level > 1
+              else
+                if Marfa.config.logging_level > 0
+                  $logger.error("REST HEA code    = #{response.code}")
+                  $logger.error("REST HEA body    = #{response.body}")
+                end
+              end
 
               block.call(response)
             end
@@ -71,17 +103,24 @@ module Marfa
         #   Rest.post(url, payload) do |response|
         # @return response [RestClient::Response]
         def self.post (url, payload, headers={}, &block)
-          p "REST POST url = #{url}" if Marfa.config.logging_level > 0
-
           if Marfa.config.logging_level > 0
-            p "REST POST headers= #{headers}"
-            p "REST POST payload= #{payload}"
+            $logger.info("REST POS url     = #{url}")
+            $logger.info("REST POS headers = #{headers}")
+            $logger.info("REST POS payload = #{payload}")
           end
 
           if block.nil?
             response = RestClient.post(url, payload, headers)
-            p "REST POST code = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
+            if response.code == 200
+              $logger.info("REST POS code    = #{response.code}") if Marfa.config.logging_level > 0
+              $logger.info("REST POS body    = #{response.body}") if Marfa.config.logging_level > 1
+            else
+              if Marfa.config.logging_level > 0
+                $logger.error("REST POS code    = #{response.code}")
+                $logger.error("REST POS body    = #{response.body}")
+              end
+            end
+
             return response
           else
             RestClient::Request.execute(
@@ -90,8 +129,16 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              p "REST POST code  = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
+              if response.code == 200
+                $logger.info("REST POS code    = #{response.code}") if Marfa.config.logging_level > 0
+                $logger.info("REST POS body    = #{response.body}") if Marfa.config.logging_level > 1
+              else
+                if Marfa.config.logging_level > 0
+                  $logger.error("REST POS code    = #{response.code}")
+                  $logger.error("REST POS body    = #{response.body}")
+                end
+              end
+
 
               block.call(response)
             end
@@ -108,16 +155,24 @@ module Marfa
         #   Rest.put(url, payload) do |response|
         # @return response [RestClient::Response]
         def self.put(url, payload, headers = {}, &block)
-          p "REST PUT url  = #{url}" if Marfa.config.logging_level > 0
           if Marfa.config.logging_level > 0
-            p "REST PUT headers= #{headers}"
-            p "REST PUT payload= #{payload}"
+            $logger.info("REST PUT url     = #{url}")
+            $logger.info("REST PUT headers = #{headers}")
+            $logger.info("REST PUT payload = #{payload}")
           end
 
           if block.nil?
             response = RestClient.put(url, payload, headers)
-            p "REST PUT code   = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
+            if response.code == 200
+              $logger.info("REST PUT code    = #{response.code}") if Marfa.config.logging_level > 0
+              $logger.info("REST PUT body    = #{response.body}") if Marfa.config.logging_level > 1
+            else
+              if Marfa.config.logging_level > 0
+                $logger.error("REST PUT code    = #{response.code}")
+                $logger.error("REST PUT body    = #{response.body}")
+              end
+            end
+
             return response
           else
             RestClient::Request.execute(
@@ -126,8 +181,15 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              p "REST PUT code   = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
+              if response.code == 200
+                $logger.info("REST PUT code    = #{response.code}") if Marfa.config.logging_level > 0
+                $logger.info("REST PUT body    = #{response.body}") if Marfa.config.logging_level > 1
+              else
+                if Marfa.config.logging_level > 0
+                  $logger.error("REST PUT code    = #{response.code}")
+                  $logger.error("REST PUT body    = #{response.body}")
+                end
+              end
 
               block.call(response)
             end
@@ -143,17 +205,24 @@ module Marfa
         #   Rest.delete(url, payload, headers) do |response|
         # @return response [RestClient::Response]
         def self.delete(url, payload = {}, headers = {}, &block)
-          p "REST DEL url    = #{url}" if Marfa.config.logging_level > 0
           if Marfa.config.logging_level > 0
-            p "REST DEL headers= #{headers}"
-            p "REST DEL payload= #{payload}"
+            $logger.info("REST DEL url     = #{url}")
+            $logger.info("REST DEL headers = #{headers}")
+            $logger.info("REST DEL payload = #{payload}")
           end
 
           if block.nil?
             response = RestClient.delete(url, headers)
+            if response.code == 200
+              $logger.info("REST DEL code    = #{response.code}") if Marfa.config.logging_level > 0
+              $logger.info("REST DEL body    = #{response.body}") if Marfa.config.logging_level > 1
+            else
+              if Marfa.config.logging_level > 0
+                $logger.error("REST DEL code    = #{response.code}")
+                $logger.error("REST DEL body    = #{response.body}")
+              end
+            end
 
-            p "REST DEL code  = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
 
             return response
           else
@@ -163,8 +232,15 @@ module Marfa
                 payload: payload,
                 headers: headers
             ) do |response|
-              p "REST DEL code   = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
+              if response.code == 200
+                $logger.info("REST DEL code    = #{response.code}") if Marfa.config.logging_level > 0
+                $logger.info("REST DEL body    = #{response.body}") if Marfa.config.logging_level > 1
+              else
+                if Marfa.config.logging_level > 0
+                  $logger.error("REST DEL code    = #{response.code}")
+                  $logger.error("REST DEL body    = #{response.body}")
+                end
+              end
 
               block.call(response)
             end
