@@ -19,9 +19,9 @@ Marfa.configure do |cfg|
   cfg.environment = :development
   # Request logging
   cfg.logging = true
-  # Logging level 0 - disabled; 1 - small; 2 - all
-  cfg.logging_level = 0
+  # Logging level see Logger
   $logger.level = Logger::INFO
+  # Logging format time
   $logger.datetime_format = '%d/%b/%Y:%H:%M:%S %z'
   # Show error page with backtrace
   cfg.show_exceptions = true
