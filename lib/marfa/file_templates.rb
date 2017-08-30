@@ -20,9 +20,9 @@ Marfa.configure do |cfg|
   # Request logging
   cfg.logging = true
   # Logging level see Logger
-  $logger.level = Logger::INFO
+  cfg.logging_level = Logger::INFO
   # Logging format time
-  $logger.datetime_format = '%d/%b/%Y:%H:%M:%S %z'
+  cfg.logging_datetime_format = '%d/%b/%Y:%H:%M:%S %z'
   # Show error page with backtrace
   cfg.show_exceptions = true
   # log exception backtraces to STDERR

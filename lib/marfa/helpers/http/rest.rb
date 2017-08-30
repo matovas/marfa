@@ -144,9 +144,11 @@ module Marfa
         # @example
         #   _log_head(type, url, headers, payload)
         def self._log_head(type, url, headers, payload = nil)
-          $logger.info("REST #{type} url     = #{url}")
-          $logger.info("REST #{type} headers = #{headers}")
-          $logger.info("REST #{type} payload = #{payload}") unless payload.nil?
+          unless $logger.nil?
+            $logger.info("REST #{type} url     = #{url}")
+            $logger.info("REST #{type} headers = #{headers}")
+            $logger.info("REST #{type} payload = #{payload}") unless payload.nil?
+          end
         end
 
         # logging body response of request
@@ -156,12 +158,14 @@ module Marfa
         # @example
         #   _log_head(type, response.code, response.body)
         def self._log_body(type, code, body)
-          if code == 200
-            $logger.info("REST #{type} code    = #{code}")
-            $logger.debug("REST #{type} body    = #{body}")
-          else
-            $logger.error("REST #{type} code    = #{code}")
-            $logger.error("REST #{type} body    = #{body}")
+          unless $logger.nil?
+            if code == 200
+              $logger.info("REST #{type} code    = #{code}")
+              $logger.debug("REST #{type} body    = #{body}")
+            else
+              $logger.error("REST #{type} code    = #{code}")
+              $logger.error("REST #{type} body    = #{body}")
+            end
           end
         end
       end
