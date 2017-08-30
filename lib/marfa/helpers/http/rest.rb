@@ -14,31 +14,15 @@ module Marfa
         #   response = Rest.get(url, headers)
         # @return response [RestClient::Response]
         def self.get(url, headers = {}, &block)
-          $logger.info("REST GET url     = #{url}")
-          $logger.info("REST GET headers = #{headers}")
+          _log_head('GET', url, headers)
 
           if block.nil?
             response = RestClient.get(url, headers)
-
-            if response.code == 200
-              $logger.info("REST GET code    = #{response.code}")
-              $logger.debug("REST DEL body    = #{response.body}")
-            else
-              $logger.error("REST GET code    = #{response.code}")
-              $logger.error("REST GET body    = #{response.body}")
-            end
-
+            _log_body('GET', response.code, response.body)
             response
           else
             RestClient.get(url, headers) do |response|
-              if response.code == 200
-                $logger.info("REST GET code    = #{response.code}")
-                $logger.debug("REST GET body    = #{response.body}")
-              else
-                $logger.error("REST GET code    = #{response.code}")
-                $logger.error("REST GET body    = #{response.body}")
-              end
-
+              _log_body('GET', response.code, response.body)
               block.call(response)
             end
           end
@@ -51,31 +35,15 @@ module Marfa
         #   response = Rest.head(url)
         # @return response [RestClient::Response]
         def self.head(url, headers = {}, &block)
-          $logger.info("REST HEA url     = #{url}")
-          $logger.info("REST HEA headers = #{headers}")
+          _log_head('HEA', url, headers)
 
           if block.nil?
             response = RestClient.head(url, headers)
-
-            if response.code == 200
-              $logger.info("REST HEA code    = #{response.code}")
-              $logger.debug("REST HEA body    = #{response.body}")
-            else
-              $logger.error("REST HEA code    = #{response.code}")
-              $logger.error("REST HEA body    = #{response.body}")
-            end
-
+            _log_body('HEA', response.code, response.body)
             response
           else
             RestClient.head(url, headers) do |response|
-              if response.code == 200
-                $logger.info("REST HEA code    = #{response.code}")
-                $logger.debug("REST HEA body    = #{response.body}")
-              else
-                $logger.error("REST HEA code    = #{response.code}")
-                $logger.error("REST HEA body    = #{response.body}")
-              end
-
+              _log_body('HEA', response.code, response.body)
               block.call(response)
             end
           end
@@ -91,19 +59,11 @@ module Marfa
         #   Rest.post(url, payload) do |response|
         # @return response [RestClient::Response]
         def self.post (url, payload, headers={}, &block)
-          $logger.info("REST POS url     = #{url}")
-          $logger.info("REST POS headers = #{headers}")
-          $logger.info("REST POS payload = #{payload}")
+          _log_head('POS', url, headers, payload)
 
           if block.nil?
             response = RestClient.post(url, payload, headers)
-            if response.code == 200
-              $logger.info("REST POS code    = #{response.code}")
-              $logger.debug("REST POS body    = #{response.body}")
-            else
-              $logger.error("REST POS code    = #{response.code}")
-              $logger.error("REST POS body    = #{response.body}")
-            end
+            _log_body('POS', response.code, response.body)
 
             response
           else
@@ -113,14 +73,7 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              if response.code == 200
-                $logger.info("REST POS code    = #{response.code}")
-                $logger.debug("REST POS body    = #{response.body}")
-              else
-                $logger.error("REST POS code    = #{response.code}")
-                $logger.error("REST POS body    = #{response.body}")
-              end
-
+              _log_body('POS', response.code, response.body)
               block.call(response)
             end
           end
@@ -136,20 +89,11 @@ module Marfa
         #   Rest.put(url, payload) do |response|
         # @return response [RestClient::Response]
         def self.put(url, payload, headers = {}, &block)
-          $logger.info("REST PUT url     = #{url}")
-          $logger.info("REST PUT headers = #{headers}")
-          $logger.info("REST PUT payload = #{payload}")
+          _log_head('PUT', url, headers, payload)
 
           if block.nil?
             response = RestClient.put(url, payload, headers)
-            if response.code == 200
-              $logger.info("REST PUT code    = #{response.code}")
-              $logger.debug("REST PUT body    = #{response.body}")
-            else
-              $logger.error("REST PUT code    = #{response.code}")
-              $logger.error("REST PUT body    = #{response.body}")
-            end
-
+            _log_body('PUT', response.code, response.body)
             response
           else
             RestClient::Request.execute(
@@ -158,14 +102,7 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              if response.code == 200
-                $logger.info("REST PUT code    = #{response.code}")
-                $logger.debug("REST PUT body    = #{response.body}")
-              else
-                $logger.error("REST PUT code    = #{response.code}")
-                $logger.error("REST PUT body    = #{response.body}")
-              end
-
+              _log_body('PUT', response.code, response.body)
               block.call(response)
             end
           end
@@ -180,22 +117,11 @@ module Marfa
         #   Rest.delete(url, payload, headers) do |response|
         # @return response [RestClient::Response]
         def self.delete(url, payload = {}, headers = {}, &block)
-          $logger.info("REST DEL url     = #{url}")
-          $logger.info("REST DEL headers = #{headers}")
-          $logger.info("REST DEL payload = #{payload}")
+          _log_head('DEL', url, headers, payload)
 
           if block.nil?
             response = RestClient.delete(url, headers)
-
-
-            if response.code == 200
-              $logger.info("REST DEL code    = #{response.code}")
-              $logger.debug("REST DEL body    = #{response.body}")
-            else
-              $logger.error("REST DEL code    = #{response.code}")
-              $logger.error("REST DEL body    = #{response.body}")
-            end
-
+            _log_body('DEL', response.code, response.body)
             response
           else
             RestClient::Request.execute(
@@ -204,16 +130,38 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              if response.code == 200
-                $logger.info("REST DEL code    = #{response.code}")
-                $logger.debug("REST DEL body    = #{response.body}")
-              else
-                $logger.error("REST DEL code    = #{response.code}")
-                $logger.error("REST DEL body    = #{response.body}")
-              end
-
+              _log_body('DEL', response.code, response.body)
               block.call(response)
             end
+          end
+        end
+
+        # logging head of request
+        # @param type [String] - type of request
+        # @param url [String] - url
+        # @param headers [Hash] - headers hash
+        # @param payload [Hash] - payload
+        # @example
+        #   _log_head(type, url, headers, payload)
+        def self._log_head(type, url, headers, payload = nil)
+          $logger.info("REST #{type} url     = #{url}")
+          $logger.info("REST #{type} headers = #{headers}")
+          $logger.info("REST #{type} payload = #{payload}") unless payload.nil?
+        end
+
+        # logging body response of request
+        # @param type [String] - type of request
+        # @param code [String] - http code response
+        # @param body [String] - response body
+        # @example
+        #   _log_head(type, response.code, response.body)
+        def self._log_body(type, code, body)
+          if code == 200
+            $logger.info("REST #{type} code    = #{code}")
+            $logger.debug("REST #{type} body    = #{body}")
+          else
+            $logger.error("REST #{type} code    = #{code}")
+            $logger.error("REST #{type} body    = #{body}")
           end
         end
       end
