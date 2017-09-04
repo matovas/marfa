@@ -2,6 +2,8 @@ require 'ostruct'
 require 'marfa/controllers/base_controller'
 require 'marfa/controllers/css_controller'
 require 'htmlcompressor'
+require 'logger'
+
 
 module Marfa
   # Configuration
@@ -16,6 +18,7 @@ module Marfa
     _configure_settings(Marfa::Controllers::BaseController)
     _configure_settings(Marfa::Controllers::CssController) if Marfa.config.use_css_build
     _configure_ext_modules(Marfa::Controllers::BaseController)
+    _configure_logger
   end
 
   # Configure Marfa in block
@@ -45,6 +48,12 @@ module Marfa
       app.use Rack::Csrf, raise: true if Marfa.config.csrf_enabled
       app.use HtmlCompressor::Rack, opts if opts && opts[:enabled]
     end
+  end
+
+  def self._configure_logger
+    $logger = Logger.new(STDOUT)
+    $logger.level = Marfa.config.logging_level
+    $logger.datetime_format = Marfa.config.logging_datetime_format
   end
 
   # Default settings fields for apps

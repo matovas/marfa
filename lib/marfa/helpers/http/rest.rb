@@ -14,21 +14,15 @@ module Marfa
         #   response = Rest.get(url, headers)
         # @return response [RestClient::Response]
         def self.get(url, headers = {}, &block)
-          p "REST GET url = #{url}" if Marfa.config.logging_level > 0
-          p "REST GET headers = #{headers}" if Marfa.config.logging_level > 0
+          _log_head('GET', url, headers)
 
           if block.nil?
             response = RestClient.get(url, headers)
-
-            p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
-
-            return response
+            _log_body('GET', response.code, response.body)
+            response
           else
             RestClient.get(url, headers) do |response|
-              p "REST GET code = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
-
+              _log_body('GET', response.code, response.body)
               block.call(response)
             end
           end
@@ -41,21 +35,15 @@ module Marfa
         #   response = Rest.head(url)
         # @return response [RestClient::Response]
         def self.head(url, headers = {}, &block)
-          p "REST HEA url = #{url}" if Marfa.config.logging_level > 0
-          p "REST HEA headers = #{headers}" if Marfa.config.logging_level > 0
+          _log_head('HEA', url, headers)
 
           if block.nil?
             response = RestClient.head(url, headers)
-
-            p "REST HEA code  = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
-
-            return response
+            _log_body('HEA', response.code, response.body)
+            response
           else
             RestClient.head(url, headers) do |response|
-              p "REST HEA code  = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
-
+              _log_body('HEA', response.code, response.body)
               block.call(response)
             end
           end
@@ -71,18 +59,13 @@ module Marfa
         #   Rest.post(url, payload) do |response|
         # @return response [RestClient::Response]
         def self.post (url, payload, headers={}, &block)
-          p "REST POST url = #{url}" if Marfa.config.logging_level > 0
-
-          if Marfa.config.logging_level > 0
-            p "REST POST headers= #{headers}"
-            p "REST POST payload= #{payload}"
-          end
+          _log_head('POS', url, headers, payload)
 
           if block.nil?
             response = RestClient.post(url, payload, headers)
-            p "REST POST code = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
-            return response
+            _log_body('POS', response.code, response.body)
+
+            response
           else
             RestClient::Request.execute(
               method: :post,
@@ -90,9 +73,7 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              p "REST POST code  = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
-
+              _log_body('POS', response.code, response.body)
               block.call(response)
             end
           end
@@ -108,17 +89,12 @@ module Marfa
         #   Rest.put(url, payload) do |response|
         # @return response [RestClient::Response]
         def self.put(url, payload, headers = {}, &block)
-          p "REST PUT url  = #{url}" if Marfa.config.logging_level > 0
-          if Marfa.config.logging_level > 0
-            p "REST PUT headers= #{headers}"
-            p "REST PUT payload= #{payload}"
-          end
+          _log_head('PUT', url, headers, payload)
 
           if block.nil?
             response = RestClient.put(url, payload, headers)
-            p "REST PUT code   = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
-            return response
+            _log_body('PUT', response.code, response.body)
+            response
           else
             RestClient::Request.execute(
               method: :put,
@@ -126,9 +102,7 @@ module Marfa
               payload: payload,
               headers: headers
             ) do |response|
-              p "REST PUT code   = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
-
+              _log_body('PUT', response.code, response.body)
               block.call(response)
             end
           end
@@ -143,31 +117,53 @@ module Marfa
         #   Rest.delete(url, payload, headers) do |response|
         # @return response [RestClient::Response]
         def self.delete(url, payload = {}, headers = {}, &block)
-          p "REST DEL url    = #{url}" if Marfa.config.logging_level > 0
-          if Marfa.config.logging_level > 0
-            p "REST DEL headers= #{headers}"
-            p "REST DEL payload= #{payload}"
-          end
+          _log_head('DEL', url, headers, payload)
 
           if block.nil?
             response = RestClient.delete(url, headers)
-
-            p "REST DEL code  = #{response.code}" if Marfa.config.logging_level > 0
-            p response.body if Marfa.config.logging_level > 1
-
-            return response
+            _log_body('DEL', response.code, response.body)
+            response
           else
             RestClient::Request.execute(
-                method: :delete,
-                url: url,
-                payload: payload,
-                headers: headers
+              method: :delete,
+              url: url,
+              payload: payload,
+              headers: headers
             ) do |response|
-              p "REST DEL code   = #{response.code}" if Marfa.config.logging_level > 0
-              p response.body if Marfa.config.logging_level > 1
-
+              _log_body('DEL', response.code, response.body)
               block.call(response)
             end
+          end
+        end
+
+        # logging head of request
+        # @param type [String] - type of request
+        # @param url [String] - url
+        # @param headers [Hash] - headers hash
+        # @param payload [Hash] - payload
+        # @example
+        #   _log_head(type, url, headers, payload)
+        def self._log_head(type, url, headers, payload = nil)
+          return if $logger.nil?
+          $logger.info("REST #{type} url     = #{url}")
+          $logger.info("REST #{type} headers = #{headers}")
+          $logger.info("REST #{type} payload = #{payload}") unless payload.nil?
+        end
+
+        # logging body response of request
+        # @param type [String] - type of request
+        # @param code [String] - http code response
+        # @param body [String] - response body
+        # @example
+        #   _log_body(type, response.code, response.body)
+        def self._log_body(type, code, body)
+          return if $logger.nil?
+          if code == 200
+            $logger.info("REST #{type} code    = #{code}")
+            $logger.debug("REST #{type} body    = #{body}")
+          else
+            $logger.error("REST #{type} code    = #{code}")
+            $logger.error("REST #{type} body    = #{body}")
           end
         end
       end
