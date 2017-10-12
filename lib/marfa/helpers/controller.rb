@@ -3,8 +3,6 @@ require 'marfa/configuration'
 module Marfa
   module Helpers
     module Controller
-      # DEFAULT_CACHE_TIME = Marfa.config.cache[:expiration_time] unless Marfa.respond_to?(:config)
-
       # Render content
       # @param path [String] - URL
       # @param data [Hash] - options hash
@@ -37,13 +35,9 @@ module Marfa
       def render_page(options)
         cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
 
-        # kind = 'page'
-        # kind += "-#{@device}" if Marfa.config.cache[:use_device]
-
         full_path = 'pages/' + options[:path]
         return render_content(full_path, options[:data]) if cache_time.zero?
 
-        # cache_key = Marfa.cache.create_key(kind, options[:path], options[:tags])
         render_cached_content(options[:cache_key], full_path, options[:data])
       end
 
@@ -60,13 +54,13 @@ module Marfa
 
       # convert query json to tags
       # @param query [Hash] - hash of params
-      # @return [Array] of strings key-value or []
+      # @return [String]
       def query_to_tags(query)
         result = []
         if query.is_a? Hash
           query.each { |key, value| result << "#{key}-#{value}" }
         end
-        result
+        result.join('_')
       end
 
       # Render block from cache, return html
@@ -75,19 +69,10 @@ module Marfa
       #   render_block({ path: 'index/index', tags: ['tag1', 'tag2'] })
       # @return [String] rendered block
       def render_block(options)
-        pp options[:path]
-        pp options[:query]
-        pp options[:cache_block]
-        pp options[:cache_key]
-        # cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
         cache_block = options[:cache_block]
-        # tags = options[:tags] || []
 
-        # kind = 'block'
-        # kind += "-#{@device}" if Marfa.config.cache[:use_device]
         # tags += query_to_tags(options[:query])
 
-        # if cache_time > 0
         if cache_block
           content = get_cached_content(options[:cache_key])
           return content unless content.nil?
@@ -102,7 +87,7 @@ module Marfa
           locals: options[:locals] || {}
         }
 
-        block = Object.const_get(classname).new
+        block = Object.const_get(classname)
         data = block.get_data(attrs)
         data = data.merge(options[:locals]) unless options[:locals].nil?
 
@@ -110,25 +95,17 @@ module Marfa
 
         return render_content(full_path, data) unless cache_block
 
-        # cache_key = Marfa.cache.create_key(kind, options[:path], tags)
         render_cached_content(options[:cache_key], full_path, data)
       end
 
       # Render block from cache, return html without class eval
-      # @param path [String] - URL
-      # @param data [Hash] - data to render
-      # @example
-      #   render_static_block('index/index', ['tag1', 'tag2'])
+      # @param options [Hash] - params
       # @return [String] rendered block
-      # def render_static_block(path, data = {})
-      #   content = get_cached_content('block', path)
-      #   return content unless content.nil?
-      #
-      #   cache_key = Marfa.cache.create_key('block', path)
-      #   full_path = Marfa.config.block_templates_path + '/' + path
-      #
-      #   render_cached_content(cache_key, full_path, data)
-      # end
+      def render_static_block(options)
+        return get_cached_content(options[:cache_key]) unless options[:cache_block].blank?
+        full_path = "#{Marfa.config.block_templates_path}/#{options[:path]}"
+        render_cached_content(options[:cache_key], full_path, options[:data])
+      end
 
       # Generate CSRF token
       # @return [String] CSRF token
@@ -148,17 +125,11 @@ module Marfa
       #   get_html({ path: 'index', tags: ['tag1', 'tag2'], data: {} })
       # @return [String] HTML
       def get_html(options)
-        cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
+        return render_page(options) if options[:cache_page].blank? || options[:cache_key].blank?
 
-        if cache_time > 0
-          # kind = 'page'
-          # kind += "-#{@device}" if Marfa.config.cache[:use_device]
-          # @todo: добавлять-таки сюда к cache_key "page:"
-          html = get_cached_content(options[:cache_key])
-          html = render_page(options) if html.nil?
-        else
-          html = render_page(options)
-        end
+        html = get_cached_content(options[:cache_key])
+        html = render_page(options) if html.nil?
+
         html
       end
 
@@ -177,19 +148,9 @@ module Marfa
       #   render_block_with_data({ path: 'index/index', tags: ['tag1', 'tag2'] })
       # @return [String] rendered block
       def render_block_with_data(options)
-        pp options[:path]
-        pp options[:query]
-        pp options[:cache_block]
-        pp options[:cache_key]
         cache_block = options[:cache_block]
-        # cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
-        # tags = options[:tags] || []
-        #
-        # kind = 'block'
-        # kind += "-#{@device}" if Marfa.config.cache[:use_device]
+
         # tags += query_to_tags(options[:query])
-        # @todo: добавлять-таки сюда к cache_key "block:"
-        # if cache_time.positive?
         if cache_block
           content = get_cached_content(options[:cache_key])
           return content unless content.nil?
@@ -202,12 +163,11 @@ module Marfa
 
         return render_content(full_path, data) unless cache_block
 
-        # cache_key = Marfa.cache.create_key(kind, options[:path], tags)
         render_cached_content(options[:cache_key], full_path, data)
       end
 
       alias_method :render_component, :render_block
-      # alias_method :render_static_component, :render_static_block
+      alias_method :render_static_component, :render_static_block
     end
   end
 end
