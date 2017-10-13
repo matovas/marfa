@@ -10,8 +10,6 @@ module Marfa
       #   render_content('some_key', 'path/url', {})
       # @return [String] rendered content
       def render_content(path, data)
-        pp path
-        pp 'RENDER_CONTENT'
         haml :"#{path}", locals: data
       end
 
@@ -23,7 +21,6 @@ module Marfa
       #   render_cached_content('some_key', 'path/url', {})
       # @return [String] rendered content
       def render_cached_content(cache_key, path, data = {}, cache_time = Marfa.config.cache[:expiration_time])
-        pp 'RENDER_CACHED_CONTENT'
         return Marfa.cache.get(cache_key) if Marfa.cache.exist?(cache_key)
         output = render_content(path, data)
         Marfa.cache.set(cache_key, output, cache_time)
@@ -36,8 +33,6 @@ module Marfa
       #   render_page({ path: 'index', tags: ['tag1', 'tag2'], data: {} })
       # @return [String] rendered content
       def render_page(options)
-        pp 'RENDER_PAGE'
-
         full_path = 'pages/' + options[:path]
         return render_content(full_path, options[:data]) if options[:cache_page].blank? || options[:cache_key].blank?
 
