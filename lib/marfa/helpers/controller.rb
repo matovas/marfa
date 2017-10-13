@@ -10,6 +10,8 @@ module Marfa
       #   render_content('some_key', 'path/url', {})
       # @return [String] rendered content
       def render_content(path, data)
+        pp path
+        pp 'RENDER_CONTENT'
         haml :"#{path}", locals: data
       end
 
@@ -21,6 +23,7 @@ module Marfa
       #   render_cached_content('some_key', 'path/url', {})
       # @return [String] rendered content
       def render_cached_content(cache_key, path, data = {}, cache_time = Marfa.config.cache[:expiration_time])
+        pp 'RENDER_CACHED_CONTENT'
         return Marfa.cache.get(cache_key) if Marfa.cache.exist?(cache_key)
         output = render_content(path, data)
         Marfa.cache.set(cache_key, output, cache_time)
@@ -33,10 +36,10 @@ module Marfa
       #   render_page({ path: 'index', tags: ['tag1', 'tag2'], data: {} })
       # @return [String] rendered content
       def render_page(options)
-        cache_time = options[:cache_time] || Marfa.config.cache[:expiration_time]
+        pp 'RENDER_PAGE'
 
         full_path = 'pages/' + options[:path]
-        return render_content(full_path, options[:data]) if cache_time.zero?
+        return render_content(full_path, options[:data]) if options[:cache_page].blank? || options[:cache_key].blank?
 
         render_cached_content(options[:cache_key], full_path, options[:data])
       end
@@ -111,20 +114,6 @@ module Marfa
       # @return [String] CSRF tag
       def csrf_tag
         Rack::Csrf.csrf_tag(env)
-      end
-
-      # Get HTML from cache or render new
-      # @param options [Hash] - params
-      # @example
-      #   get_html({ path: 'index', tags: ['tag1', 'tag2'], data: {} })
-      # @return [String] HTML
-      def get_html(options)
-        return render_page(options) if options[:cache_page].blank? || options[:cache_key].blank?
-
-        html = get_cached_content(options[:cache_key])
-        html = render_page(options) if html.nil?
-
-        html
       end
 
       # Render pagination panel
