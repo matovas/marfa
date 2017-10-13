@@ -71,24 +71,18 @@ module Marfa
       def render_block(options)
         cache_block = options[:cache_block]
 
-        # tags += query_to_tags(options[:query])
-
         if cache_block
           content = get_cached_content(options[:cache_key])
           return content unless content.nil?
         end
 
-        classname = options[:class_name] || (options[:path].to_class_name + 'Block')
-        return unless Object.const_defined?(classname)
+        model_name = options[:model]
+        return unless Object.const_defined?(model_name)
 
-        attrs = {
-          user_data: @user_data || {},
-          query: options[:query] || {},
-          locals: options[:locals] || {}
-        }
+        model = Object.const_get(model_name)
+        return unless model.respond_to? options[:method].to_sym
 
-        block = Object.const_get(classname)
-        data = block.get_data(attrs)
+        data = model.send(options[:method].to_sym, options[:params])
         data = data.merge(options[:locals]) unless options[:locals].nil?
 
         full_path = Marfa.config.block_templates_path + '/' + options[:path]
