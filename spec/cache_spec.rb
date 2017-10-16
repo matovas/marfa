@@ -34,17 +34,17 @@ describe Marfa::Cache do
     expect(@cache.exist?(@key)).to eql false
   end
 
-  it 'checks_create_cache_key' do
-    kind = 'block'
-    path = 'offer/list'
-    tags = %w(offers cities)
-    cache_key = @cache.create_key(kind, path, tags)
-    expect(cache_key.length).to satisfy { |len| len > 20 }
-  end
+  # it 'checks_create_cache_key' do
+  #   kind = 'block'
+  #   path = 'offer/list'
+  #   tags = %w(offers cities)
+  #   cache_key = @cache.create_key(kind, path, tags)
+  #   expect(cache_key.length).to satisfy { |len| len > 20 }
+  # end
 
-  it 'checks_create_json_cache_key' do
-    path = 'offer/list.json'
-    cache_key = @cache.create_json_key(path)
-    expect(cache_key.length).to eql path.length
-  end
+  # it 'checks_create_json_cache_key' do
+  #   path = 'offer/list.json'
+  #   cache_key = @cache.create_json_key(path)
+  #   expect(cache_key.length).to eql path.length
+  # end
 end

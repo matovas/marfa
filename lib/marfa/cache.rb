@@ -12,15 +12,15 @@ module Marfa
     # Write data to cache
     # @example
     #   Marfa.cache.set('key', 'value', 7200)
-    def set(key, value, _time = nil)
+    def set(key, value, time = nil)
       return unless @config[:enabled]
-      return if _time.zero?
-      if _time.is_a? Numeric
-          @redis.set(key, value, ex: _time) # ex - is seconds
+      return if time.zero?
+
+      if time.is_a? Numeric
+        @redis.set(key, value, ex: time) # ex - is seconds
       else
         @redis.set(key, value) #infinite
       end
-
     end
 
     # Get data from cache
@@ -67,18 +67,18 @@ module Marfa
     # @example
     #   Marfa.cache.create_key('block', 'offer/list', ['tag1', 'tag2'])
     # @return [String] key
-    def create_key(kind, path, tags = [])
-      kind + '_' + path.tr('/', '_') + '__' + tags.join('_')
-    end
+    # def create_key(kind, path, tags = [])
+    #   kind + '_' + path.tr('/', '_') + '__' + tags.join('_')
+    # end
 
     # Create key for json urls
     # @param path [String] path
     # @example
     #   Marfa.cache.create_json_key('/get_list.json')
     # @return [String] key
-    def create_json_key(path)
-      path.gsub(%r{[/.]}, '_')
-    end
+    # def create_json_key(path)
+    #   path.gsub(%r{[/.]}, '_')
+    # end
   end
 
   def self.cache
