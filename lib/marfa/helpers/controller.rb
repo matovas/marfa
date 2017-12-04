@@ -10,7 +10,8 @@ module Marfa
       #   render_content('some_key', 'path/url', {})
       # @return [String] rendered content
       def render_content(path, data)
-        haml :"#{path}", locals: data
+        template_engine = Marfa.config.template_engine || :haml
+        render(template_engine, :"#{path}", locals: data)
       end
 
       # Rendering cached content
@@ -117,7 +118,8 @@ module Marfa
       # @return [String] HTML
       def render_pagination(data, template = nil)
         template ||= Marfa.config.pagination_template
-        haml :"#{template}", locals: data
+        template_engine = Marfa.config.template_engine || :haml
+        render(template_engine, :"#{template}", locals: data)
       end
 
       # Render block with data from cache, return html

@@ -55,4 +55,10 @@ class String
   def blank?
     empty? || BLANK_RE.match?(self)
   end
+
+  # Object isn't blank
+  # @return [true, false]
+  def present?
+    !blank?
+  end
 end
