@@ -16,4 +16,10 @@ class Numeric
     return true if zero?
     false
   end
+
+  # Object isn't blank
+  # @return [true, false]
+  def present?
+    !blank?
+  end
 end
