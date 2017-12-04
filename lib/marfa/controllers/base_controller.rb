@@ -25,7 +25,8 @@ module Marfa
       # Not Found page
       not_found do
         status 404
-        haml :not_found
+        template_engine = Marfa.config.template_engine || :haml
+        render(template_engine, :not_found)
       end
 
       # All methods defined below might be used in child controllers
