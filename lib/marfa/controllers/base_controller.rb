@@ -16,6 +16,7 @@ module Marfa
           client = DeviceDetector.new(request.user_agent)
           @device = client.device_type
           @browser = client.name
+          @client_full_version = client.full_version
           @device = Marfa.config.device_detector[:default_device] if @device.nil?
         end
 
