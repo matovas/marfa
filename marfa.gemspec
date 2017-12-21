@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'marfa'
-  s.version     = '0.8.2'
+  s.version     = '0.9.0'
   s.required_ruby_version = '>= 2.3.0'
   s.platform    = Gem::Platform::RUBY
   s.date        = Time.now.strftime('%Y-%m-%d')
@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_dependency('haml', '~> 4.0', '>= 4.0.7')
-  s.add_dependency('puma', '~>3.8')
   s.add_dependency('rack_csrf', '~> 2.6')
   s.add_dependency('rake', '~> 12')
   s.add_dependency('redis', '~> 3.3', '>= 3.3.3')
@@ -37,6 +36,4 @@ Gem::Specification.new do |s|
   s.add_dependency('closure-compiler', '~> 1.1', '>= 1.1.12')
   s.add_dependency('htmlcompressor', '~> 0.3.1')
   s.add_dependency('csso-rails', '~> 0.5.0')
-  s.add_dependency('yard', '~> 0.9', '>= 0.9.8')
-  s.add_dependency('yard-sinatra', '~> 1')
 end
