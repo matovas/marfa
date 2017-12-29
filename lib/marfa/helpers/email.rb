@@ -16,7 +16,8 @@ module Marfa
         config = Marfa.config.email[mailbox]
         return if config.nil?
 
-        body = haml :"#{options[:template]}", locals: options[:data], layout: false
+        template_engine = Marfa.config.template_engine || :haml
+        body = render(template_engine, :"#{options[:template]}", locals: options[:data], layout: false)
 
         Pony.options = {
           via: :smtp,
@@ -24,15 +25,14 @@ module Marfa
         }
 
         mail = {
-            to: options[:to],
-            subject: options[:subject],
-            html_body: body
+          to: options[:to],
+          subject: options[:subject],
+          html_body: body
         }
 
         mail[:from] = config[:from] unless config[:from].nil?
 
         Pony.mail(mail)
-
       end
     end
   end
