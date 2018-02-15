@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'json'
 require 'marfa/configuration'
+require 'marfa/exceptions'
 
 module Marfa
   # Extend Models
@@ -11,6 +12,7 @@ module Marfa
       class ModelError < StandardError; end
 
       include Marfa::Helpers::HTTP
+      include Marfa::Exceptions
 
       @aliases = {}
 
@@ -69,6 +71,8 @@ module Marfa
       # @return [Hash]
       def self.get_raw_data_with_pagination(params)
         params[:query] = params[:query].delete_if { |_, v| v.nil? } unless params[:query].nil?
+        params[:query][:page] = 1 if params[:query][:page].blank?
+
         path = params[:path]
         cache_key = params[:cache_key]
 
@@ -83,7 +87,14 @@ module Marfa
           Marfa.cache.set(cache_key, result.to_json, params[:cache_time] || Marfa.config.cache[:expiration_time])
 
           return result
+        # Avoid range errors
+        rescue RestClient::RangeNotSatisfiable
+          params[:query][:page] = 1
 
+          # try to get x_pages
+          res = _get_request_result_with_headers(params)
+
+          raise PagesRangeError.new('Page is out of range', res[:data_pages])
         rescue => exception
           if [:development, :test].include? Marfa.config.environment
             _log_exception(exception, path, params)
