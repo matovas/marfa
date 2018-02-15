@@ -4,6 +4,7 @@ require 'device_detector'
 require 'marfa/helpers/controller'
 require 'marfa/helpers/http/vary'
 require 'marfa/css_version'
+require 'marfa/exceptions'
 
 # Extending Marfa
 module Marfa
@@ -11,6 +12,8 @@ module Marfa
   module Controllers
     # base controller
     class BaseController < Sinatra::Base
+      include Marfa::Exceptions
+
       before do
         if Marfa.config.device_detector[:enabled]
           client = DeviceDetector.new(request.user_agent)
