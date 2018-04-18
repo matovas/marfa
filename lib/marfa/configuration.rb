@@ -40,13 +40,19 @@ module Marfa
 
   # Configure extending modules
   def self._configure_ext_modules(app)
-    opts = Marfa.config.html_compression_options
-
-    app.use Rack::Session::Cookie, key: 'rack.session', secret: Marfa.config.session_secret
+    # Compression options
+    compression_opts = Marfa.config.html_compression_options
+    # Session options
+    session_opts = Marfa.config.session_options
 
     app.configure do
       app.use Rack::Csrf, raise: true if Marfa.config.csrf_enabled
-      app.use HtmlCompressor::Rack, opts if opts && opts[:enabled]
+      app.use HtmlCompressor::Rack, compression_opts if compression_opts && compression_opts[:enabled]
+      app.use Rack::Session::Cookie,
+              key: session_opts[:key],
+              secret: session_opts[:secret],
+              coder: session_opts[:coder] if session_opts && session_opts[:enabled]
+
     end
   end
 
